@@ -33,7 +33,7 @@ fi
 
 echo "Mounting disk image to \`build/rootfs\`..."
 
-umount build/rootfs || /bin/true
+sudo umount build/rootfs || /bin/true
 mkdir -p build/rootfs
 sudo mount -o loop,offset=1048576 build/system.img build/rootfs
 
@@ -45,7 +45,15 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin system --noclear %I 38400 linux
 EOL
 
-# TODO: sudo remove password requirement
+sudo tee build/rootfs/etc/sudoers.d/nopasswd << EOL
+system ALL=(ALL:ALL) NOPASSWD: ALL
+EOL
+
+sudo cp nextboot.sh build/rootfs/home/system/nextboot.sh
+
+sudo tee -a build/rootfs/home/system/.bashrc << EOL
+./nextboot.sh
+EOL
 
 sudo umount build/rootfs
 
