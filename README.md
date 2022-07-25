@@ -7,7 +7,7 @@ Licensed by the [LiveG Open-Source Licence](LICENCE.md).
 Before bootstrapping LiveG OS, you'll need to run this command on Debian to install the required tools:
 
 ```bash
-$ sudo apt-get install qemu
+$ sudo apt-get install qemu netcat
 ```
 
 ## Ports that must be open
