@@ -49,10 +49,10 @@ sudo tee build/rootfs/etc/sudoers.d/nopasswd << EOL
 system ALL=(ALL:ALL) NOPASSWD: ALL
 EOL
 
-sudo cp nextboot.sh build/rootfs/home/system/nextboot.sh
+sudo cp firstboot.sh build/rootfs/home/system/firstboot.sh
 
 sudo tee -a build/rootfs/home/system/.bashrc << EOL
-./nextboot.sh
+./firstboot.sh
 EOL
 
 sudo umount build/rootfs
