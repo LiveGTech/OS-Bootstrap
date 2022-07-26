@@ -30,7 +30,8 @@ usermod -m -d /system system
 
 echo "Installing X11..."
 
-apt install -y xorg
+apt install -y xorg wget chromium fuse libfuse2
+dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
 echo "All done! Shutting down now..."
 

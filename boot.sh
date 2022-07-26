@@ -16,7 +16,7 @@ if [ -e cache/baseinstall.img ]; then
 else
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
-    qemu-img create build/system.img 2G
+    qemu-img create build/system.img 3G
 
     ./bootkeys.sh &
 
@@ -30,6 +30,9 @@ else
 
     cp build/system.img cache/baseinstall.img
 fi
+
+mkdir -p host/cache
+cp cache/gshell.AppImage host/cache/gshell.AppImage
 
 echo "Mounting disk image to \`build/rootfs\`..."
 
@@ -54,6 +57,8 @@ EOL
 sudo tee build/rootfs/etc/hostname << EOL
 liveg
 EOL
+
+sudo sed -i -e "s/debian/liveg/g" /etc/hosts
 
 sudo tee build/rootfs/etc/issue << EOL
 LiveG OS \n \l
