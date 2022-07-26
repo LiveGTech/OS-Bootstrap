@@ -16,7 +16,7 @@ if [ -e cache/baseinstall.img ]; then
 else
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
-    qemu-img create build/system.img 1G
+    qemu-img create build/system.img 2G
 
     ./bootkeys.sh &
 
@@ -42,17 +42,21 @@ sudo mkdir -p build/rootfs/etc/systemd/system/getty@tty1.service.d
 sudo tee build/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOL
 [Service]
 ExecStart=
-ExecStart=-/sbin/agetty --autologin system --noclear %I 38400 linux
+ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux
 EOL
 
-sudo tee build/rootfs/etc/sudoers.d/nopasswd << EOL
-system ALL=(ALL:ALL) NOPASSWD: ALL
-EOL
+sudo cp firstboot.sh build/rootfs/root/firstboot.sh
 
-sudo cp firstboot.sh build/rootfs/home/system/firstboot.sh
-
-sudo tee -a build/rootfs/home/system/.bashrc << EOL
+sudo tee -a build/rootfs/root/.bashrc << EOL
 ./firstboot.sh
+EOL
+
+sudo tee build/rootfs/etc/hostname << EOL
+liveg
+EOL
+
+sudo tee build/rootfs/etc/issue << EOL
+LiveG OS \n \l
 EOL
 
 sudo umount build/rootfs
