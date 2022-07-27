@@ -24,6 +24,8 @@ Bootstrapping LiveG OS will take around 36 minutes, though this will depend on t
 * It takes 1 minute to boot the disk drive to the firstboot script
 * It takes 5 minutes to run the firstboot script to completion
 
+Many parts of the bootstrapping process are cached in the `cache/` folder, and so once fully-bootstrapped, bootstrapping again will be quicker to perform.
+
 ## Bootstrapping
 To bootstrap LiveG OS, run the following:
 
