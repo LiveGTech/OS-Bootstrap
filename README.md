@@ -4,7 +4,7 @@ Bootstrapping toolchain for building LiveG OS installation disk images.
 Licensed by the [LiveG Open-Source Licence](LICENCE.md).
 
 ## Prerequisites
-Before bootstrapping LiveG OS, you'll need to run this command on Debian to install the required tools:
+Before bootstrapping LiveG OS, you'll need to run this command on a Debian host system to install the required tools:
 
 ```bash
 $ sudo apt-get install qemu netcat
