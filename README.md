@@ -10,6 +10,8 @@ Before bootstrapping LiveG OS, you'll need to run this command on a Debian host 
 $ sudo apt-get install qemu netcat
 ```
 
+`sudo` commands will be run throughout the bootstrapping process. To ensure continuity, set your `sudo` to be `NOPASSWD`.
+
 ## Ports that must be open
 To allow the toolchain to work properly, please keep the following ports open:
 
