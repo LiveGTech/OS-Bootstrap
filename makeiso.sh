@@ -31,3 +31,25 @@ qemu-system-x86_64 \
     -m 1G \
     -cdrom build/system.iso \
     -hda cache/test.img
+
+# For performing the installation:
+# sudo mount -t tmpfs root-rw /tmp
+# mkdir /tmp/base
+# sudo fdisk /dev/sda
+# sudo mkfs.ext4 /dev/sda1 -L LiveG-OS
+# sudo mount /dev/sda1 /tmp/base
+# sudo rsync \
+#     -ah \
+#     --info=progress2 \
+#     --no-inc-recursive \
+#     --exclude=/dev --exclude=/proc --exclude=/sys \
+#     / /tmp/base
+# sudo mkdir /tmp/base/dev
+# sudo mkdir /tmp/base/proc
+# sudo mkdir /tmp/base/sys
+# sudo mount --bind /dev /tmp/base/dev
+# sudo mount --bind /proc /tmp/base/proc
+# sudo mount --bind /sys /tmp/base/sys
+# sudo mount --bind /usr /tmp/base/usr
+# sudo chroot /tmp/base
+# sudo grub-install /dev/sda
