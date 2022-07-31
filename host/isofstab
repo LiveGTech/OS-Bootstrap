@@ -1,0 +1,9 @@
+# LiveG OS Bootstrap Toolchain
+# 
+# Copyright (C) LiveG. All Rights Reserved.
+# 
+# https://liveg.tech/os
+# Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
+
+LABEL=LiveG-OS	/	tmpfs	noatime,suid,errors=remount-ro	0	1
+/dev/sr0        /media/cdrom0   udf,iso9660 user,noauto     0       0

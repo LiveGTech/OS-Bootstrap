@@ -73,3 +73,5 @@ qemu-system-x86_64 \
     -hda build/system.img \
     -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
     -device virtio-net-pci,netdev=net0
+
+rm cache/system.img
