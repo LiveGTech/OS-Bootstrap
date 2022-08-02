@@ -37,6 +37,7 @@ qemu-system-x86_64 \
 # mkdir /tmp/base
 # sudo fdisk /dev/sda
 # sudo mkfs.ext4 /dev/sda1 -L "LiveG OS"
+# TODO: Change GRUB so label "LiveG OS" works
 # sudo mount /dev/sda1 /tmp/base
 # sudo rsync \
 #     -ah \
