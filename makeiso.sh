@@ -36,7 +36,7 @@ qemu-system-x86_64 \
 # sudo mount -t tmpfs root-rw /tmp
 # mkdir /tmp/base
 # sudo fdisk /dev/sda
-# sudo mkfs.ext4 /dev/sda1 -L LiveG-OS
+# sudo mkfs.ext4 /dev/sda1 -L "LiveG OS"
 # sudo mount /dev/sda1 /tmp/base
 # sudo rsync \
 #     -ah \
@@ -51,5 +51,4 @@ qemu-system-x86_64 \
 # sudo mount --bind /proc /tmp/base/proc
 # sudo mount --bind /sys /tmp/base/sys
 # sudo mount --bind /usr /tmp/base/usr
-# sudo chroot /tmp/base
-# sudo grub-install /dev/sda
+# sudo chroot /tmp/base /bin/bash -c "grub-install /dev/sda"
