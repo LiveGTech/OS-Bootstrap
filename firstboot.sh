@@ -24,14 +24,23 @@ echo "                                        |_|   |_|            |___/"
 echo ""
 echo "The LiveG OS bootstrapping firstboot script is running"
 
+echo "Editing hosts file..."
+
+sed -i "s/debian/liveg/" /etc/hosts
+
 echo "Making changes to system directory structure..."
 
 usermod -m -d /system system
 
 echo "Installing X11..."
 
-apt install -y xorg wget chromium fuse libfuse2 fdisk rsync
+apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
 dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+
+echo "Downloading gShell..."
+
+wget http://10.0.2.2:8000/cache/gshell.AppImage -O /system/gshell.AppImage
+chmod a+x /system/gshell.AppImage
 
 echo "All done! Shutting down now..."
 

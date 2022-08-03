@@ -10,3 +10,4 @@
 ./server.sh
 ./getbase.sh
 ./boot.sh
+./makeiso.sh

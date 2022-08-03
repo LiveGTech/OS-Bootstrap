@@ -16,11 +16,12 @@ if [ -e cache/baseinstall.img ]; then
 else
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
-    qemu-img create build/system.img 3G
+    qemu-img create build/system.img 4G
 
     ./bootkeys.sh &
 
     qemu-system-x86_64 \
+        -enable-kvm \
         -m 1G \
         -cdrom cache/base.iso \
         -hda build/system.img \
@@ -69,6 +70,7 @@ sudo umount build/rootfs
 echo "Modification of root file system complete"
 
 qemu-system-x86_64 \
+    -enable-kvm \
     -m 1G \
     -hda build/system.img \
     -netdev user,id=net0,hostfwd=tcp::8002-:8000 \

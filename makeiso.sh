@@ -25,9 +25,10 @@ sudo grub-mkrescue -o build/system.iso build/rootfs -- \
 
 sudo umount build/rootfs
 
-qemu-img create cache/test.img 3G
+qemu-img create cache/test.img 4G
 
 qemu-system-x86_64 \
+    -enable-kvm \
     -m 1G \
     -cdrom build/system.iso \
     -hda cache/test.img
@@ -35,9 +36,9 @@ qemu-system-x86_64 \
 # For performing the installation:
 # sudo mount -t tmpfs root-rw /tmp
 # mkdir /tmp/base
+# Next steps to be done inside gShell:
 # sudo fdisk /dev/sda
-# sudo mkfs.ext4 /dev/sda1 -L "LiveG OS"
-# TODO: Change GRUB so label "LiveG OS" works
+# sudo mkfs.ext4 /dev/sda1 -L "LiveG-OS"
 # sudo mount /dev/sda1 /tmp/base
 # sudo rsync \
 #     -ah \
