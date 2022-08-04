@@ -7,7 +7,7 @@ Licensed by the [LiveG Open-Source Licence](LICENCE.md).
 Before bootstrapping LiveG OS, you'll need to run this command on a Debian host system to install the required tools:
 
 ```bash
-$ sudo apt-get install qemu netcat
+$ sudo apt-get install qemu netcat grub-common grub-pc-bin xorriso rsync
 ```
 
 `sudo` commands will be run throughout the bootstrapping process. To ensure continuity, set your `sudo` to be `NOPASSWD`.

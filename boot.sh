@@ -43,27 +43,27 @@ sudo mount -o loop,offset=1048576 build/system.img build/rootfs
 
 sudo mkdir -p build/rootfs/etc/systemd/system/getty@tty1.service.d
 
-sudo tee build/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOL
+sudo tee build/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux
-EOL
+EOF
 
 sudo cp firstboot.sh build/rootfs/root/firstboot.sh
 
-sudo tee -a build/rootfs/root/.bashrc << EOL
+sudo tee -a build/rootfs/root/.bashrc << EOF
 ./firstboot.sh
-EOL
+EOF
 
-sudo tee build/rootfs/etc/hostname << EOL
+sudo tee build/rootfs/etc/hostname << EOF
 liveg
-EOL
+EOF
 
 sudo sed -i -e "s/debian/liveg/g" /etc/hosts
 
-sudo tee build/rootfs/etc/issue << EOL
+sudo tee build/rootfs/etc/issue << EOF
 LiveG OS \n \l
-EOL
+EOF
 
 sudo umount build/rootfs
 

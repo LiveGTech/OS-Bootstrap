@@ -8,9 +8,9 @@
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
 if [ -e cache/system.img ]; then
-    cp cache/system.img build/system.img
+    rsync --info=progress2 cache/system.img build/system.img
 else
-    cp build/system.img cache/system.img
+    rsync --info=progress2 build/system.img cache/system.img
 fi
 
 sudo umount build/rootfs || /bin/true
@@ -18,9 +18,10 @@ sudo mount -o loop,offset=1048576 build/system.img build/rootfs
 
 sudo cp host/isogrub.cfg build/rootfs/boot/grub/grub.cfg
 sudo cp host/isofstab build/rootfs/etc/fstab
+sudo cp host/initoverlay.sh build/rootfs/sbin/initoverlay
 
-sudo grub-mkrescue -o build/system.iso build/rootfs -- \
-    -volid LiveG-OS \
+sudo grub-mkrescue -o build/system.iso build/rootfs --directory=build/rootfs/usr/lib/grub/i386-pc -- \
+    -volid LiveG-OS-IM \
     -chmod a+rwx,g-w,o-w,ug+s,+t,g-s,-t /usr/bin/sudo
 
 sudo umount build/rootfs
@@ -29,9 +30,10 @@ qemu-img create cache/test.img 4G
 
 qemu-system-x86_64 \
     -enable-kvm \
-    -m 1G \
+    -m 2G \
     -cdrom build/system.iso \
-    -hda cache/test.img
+    -hdb cache/test.img \
+    -boot order=d
 
 # For performing the installation:
 # sudo mount -t tmpfs root-rw /tmp

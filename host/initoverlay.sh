@@ -10,17 +10,34 @@
 modprobe overlay
 
 mount -t proc proc /proc
-mount -t tmpfs mnt /mnt
+mount -t tmpfs tmp /mnt
 
 mkdir /mnt/lower
-mkdir /mnt/upper 
-mkdir /mnt/work 
+mkdir /mnt/overlay
+
+mount -t tmpfs rw /mnt/overlay
+
+mkdir /mnt/overlay/upper
+mkdir /mnt/overlay/work
 mkdir /mnt/root
 
-mount -t iso9660 -o noatime,suid,errors=remount-ro,ro /dev/sr0 /mnt/lower
-mount -t overlay -o lowerdir=/mnt/lower,upperdir=/mnt/upper,workdir=/mnt/work overlay /mnt/root
+mount -t iso9660 -o defaults,ro /dev/sr0 /mnt/lower
+mount -t overlay -o lowerdir=/mnt/lower,upperdir=/mnt/overlay/upper,workdir=/mnt/overlay/work overlay /mnt/root
+
+mkdir /mnt/root/ro
+mkdir /mnt/root/rw
 
 cd /mnt/root
+
 pivot_root . mnt
 
-exec chroot . /sbin/init
+exec chroot . sh -c "$(cat << EOF
+mount --move /mnt/mnt/lower/ /ro
+mount --move /mnt/mnt/overlay /rw
+
+chmod -R 777 /system
+chmod u+s /usr/bin/sudo
+
+exec /sbin/init
+EOF
+)"
