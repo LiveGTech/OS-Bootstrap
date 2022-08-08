@@ -26,7 +26,7 @@ sudo grub-mkrescue -o build/system.iso build/rootfs --directory=build/rootfs/usr
 
 sudo umount build/rootfs
 
-qemu-img create cache/test.img 4G
+# qemu-img create cache/test.img 4G
 
 qemu-system-x86_64 \
     -enable-kvm \
