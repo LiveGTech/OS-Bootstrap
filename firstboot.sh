@@ -60,6 +60,8 @@ wget http://10.0.2.2:8000/cache/gshell.AppImage -O /system/bin/gshell.AppImage
 chmod a+x /system/bin/gshell.AppImage
 
 mkdir -p /system/storage
+mkdir -p /system/logs
+
 wget http://10.0.2.2:8000/device.gsc -O /system/storage/device.gsc
 
 echo "Adding startup scripts..."
