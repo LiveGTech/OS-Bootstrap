@@ -59,7 +59,7 @@ sudo tee build/rootfs/etc/hostname << EOF
 liveg
 EOF
 
-sudo sed -i -e "s/debian/liveg/g" /etc/hosts
+sudo sed -i -e "s/debian/liveg/g" build/rootfs/etc/hosts
 
 sudo tee build/rootfs/etc/issue << EOF
 LiveG OS \n \l
@@ -75,6 +75,8 @@ VERSION_ID="0"
 HOME_URL="https://liveg.tech/os"
 SUPPORT_URL="https://docs.liveg.tech/?product=os"
 EOF
+
+sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/rootfs/etc/sudoers
 
 sudo umount build/rootfs
 

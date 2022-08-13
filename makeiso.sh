@@ -22,11 +22,12 @@ sudo cp host/initoverlay.sh build/rootfs/sbin/initoverlay
 
 sudo grub-mkrescue -o build/system.iso build/rootfs --directory=build/rootfs/usr/lib/grub/i386-pc -- \
     -volid LiveG-OS-IM \
-    -chmod a+rwx,g-w,o-w,ug+s,+t,g-s,-t /usr/bin/sudo
+    -chmod a+rwx,g-w,o-w,ug+s,+t,g-s,-t /usr/bin/sudo -- \
+    -chmod a+rwx /usr/sbin/initoverlay --
 
 sudo umount build/rootfs
 
-# qemu-img create cache/test.img 4G
+qemu-img create cache/test.img 4G
 
 qemu-system-x86_64 \
     -enable-kvm \

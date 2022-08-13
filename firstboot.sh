@@ -24,6 +24,18 @@ echo "                                        |_|   |_|            |___/"
 echo ""
 echo "The LiveG OS bootstrapping firstboot script is running"
 
+depInstall=true
+
+while test $# -gt 0; do
+    case $1 in
+        --skip-dep-install)
+            depInstall=false
+            ;;
+    esac
+
+    shift
+done
+
 echo "Editing hosts file..."
 
 sed -i "s/debian/liveg/" /etc/hosts
@@ -32,15 +44,59 @@ echo "Making changes to system directory structure..."
 
 usermod -m -d /system system
 
-echo "Installing X11..."
+if [ $depInstall = true ]; then
+    echo "Installing dependencies..."
 
-apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
-dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
+    dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+else
+    echo "Skipped installation of dependencies"
+fi
 
 echo "Downloading gShell..."
 
-wget http://10.0.2.2:8000/cache/gshell.AppImage -O /system/gshell.AppImage
-chmod a+x /system/gshell.AppImage
+mkdir -p /system/bin
+wget http://10.0.2.2:8000/cache/gshell.AppImage -O /system/bin/gshell.AppImage
+chmod a+x /system/bin/gshell.AppImage
+
+mkdir -p /system/storage
+wget http://10.0.2.2:8000/device.gsc -O /system/storage/device.gsc
+
+echo "Adding startup scripts..."
+
+mkdir -p /system/scripts
+
+wget http://10.0.2.2:8000/startup.sh -O /system/scripts/startup.sh
+chmod a+x /system/scripts/startup.sh
+
+wget http://10.0.2.2:8000/xload.sh -O /system/scripts/xload.sh
+chmod a+x /system/scripts/xload.sh
+
+sudo tee -a /system/.bashrc << EOF
+/system/scripts/startup.sh
+EOF
+
+echo "Adding installation helper files..."
+
+mkdir -p /system/install
+
+wget http://10.0.2.2:8000/grub.cfg -O /system/install/grub.cfg
+wget http://10.0.2.2:8000/fstab -O /system/install/fstab
+wget http://10.0.2.2:8000/fstab-swap -O /system/install/fstab-swap
+
+sudo tee -a /system/.bashrc << EOF
+/system/scripts/startup.sh
+EOF
+
+echo "Cleaning up..."
+
+tee /etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin system --noclear %I 38400 linux
+EOF
+
+sed -i "/\.\/firstboot\.sh/d" /root/.bashrc
 
 echo "All done! Shutting down now..."
 
