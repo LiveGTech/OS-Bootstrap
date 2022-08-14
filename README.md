@@ -10,7 +10,7 @@ Before bootstrapping LiveG OS, you'll need to run this command on a Debian host 
 $ sudo apt-get install qemu netcat grub-common grub-pc-bin xorriso rsync
 ```
 
-`sudo` commands will be run throughout the bootstrapping process. To ensure continuity, set your `sudo` to be `NOPASSWD`.
+`sudo` commands will be run throughout the bootstrapping process. To ensure continuity, set the `NOPASSWD` option for `sudo` for your user/group by editing the file provided by running `sudo visudo`.
 
 ## Ports that must be open
 To allow the toolchain to work properly, please keep the following ports open:
