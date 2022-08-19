@@ -43,3 +43,6 @@ To bootstrap LiveG OS, run the following:
 ```bash
 $ ./bootstrap.sh
 ```
+
+## Distributing
+Ensure that the information in `boot.sh` is up-to-date (with regards to details such as version information) before distributing. The final ISO file can then be distributed.
