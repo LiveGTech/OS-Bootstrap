@@ -3,6 +3,8 @@ Bootstrapping toolchain for building LiveG OS installation disk images.
 
 Licensed by the [LiveG Open-Source Licence](LICENCE.md).
 
+For more information on LiveG OS and its various components, visit [the LiveG OS repository](https://github.com/LiveGTech/OS).
+
 ## Prerequisites
 Before bootstrapping LiveG OS, you'll need to run this command on a Debian host system to install the required tools:
 
