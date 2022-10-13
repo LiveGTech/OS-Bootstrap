@@ -67,10 +67,10 @@ EOF
 
 sudo tee build/rootfs/etc/os-release << EOF
 NAME="LiveG OS"
-VERSION="0.1.0"
+VERSION="0.2.0"
 ID="livegos"
 ID_LIKE="debian"
-PRETTY_NAME="LiveG OS V0.1.0"
+PRETTY_NAME="LiveG OS V0.2.0"
 VERSION_ID="0"
 HOME_URL="https://liveg.tech/os"
 SUPPORT_URL="https://docs.liveg.tech/?product=os"

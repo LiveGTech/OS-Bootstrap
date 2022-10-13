@@ -3,6 +3,8 @@ Bootstrapping toolchain for building LiveG OS installation disk images.
 
 Licensed by the [LiveG Open-Source Licence](LICENCE.md).
 
+For more information on LiveG OS and its various components, visit [the LiveG OS repository](https://github.com/LiveGTech/OS).
+
 ## Prerequisites
 Before bootstrapping LiveG OS, you'll need to run this command on a Debian host system to install the required tools:
 
@@ -51,6 +53,9 @@ $ ./bootstrap.sh
 ```
 
 When complete, the distributable ISO file will be available at `build/system.iso`.
+
+## Distributing
+Ensure that the information in `boot.sh` is up-to-date (with regards to details such as version information) before bootstrapping and distributing. The final ISO file can then be distributed.
 
 ## Pipeline architecture
 Here is the process that the bootstrapper follows to create a system image:
