@@ -7,6 +7,7 @@
 # https://liveg.tech/os
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
+# Make a backup
 if [ -e cache/system.img ]; then
     rsync --info=progress2 cache/system.img build/system.img
 else
@@ -26,6 +27,10 @@ sudo grub-mkrescue -o build/system.iso build/rootfs --directory=build/rootfs/usr
     -chmod a+rwx /usr/sbin/initoverlay --
 
 sudo umount build/rootfs
+
+# TODO: Make next parts optional depending if wanting to test to see if
+# succeeded (if we automate, then next part should be skipped so script exits
+# when everything is complete).
 
 qemu-img create cache/test.img 4G
 

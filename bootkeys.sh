@@ -7,6 +7,9 @@
 # https://liveg.tech/os
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
+# This code injects keystrokes into the QEMU VM to launch setup with preseed
+# file without user input. It's called by `boot.sh`.
+
 function monitorexec {
     echo "Sending key: $1"
     echo $1 | nc -N 127.0.0.1 8001
