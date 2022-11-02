@@ -54,27 +54,33 @@ $ ./bootstrap.sh
 
 When complete, the distributable ISO file will be available at `build/system.iso`.
 
+You can also specify the platform type to target as an argument:
+
+```bash
+$ ./bootstrap.sh x86_64 # Modern PCs with typical Intel or AMD chipset
+```
+
 ## Distributing
 Ensure that the information in `boot.sh` is up-to-date (with regards to details such as version information) before bootstrapping and distributing. The final ISO file can then be distributed.
 
 ## Pipeline architecture
-Here is the process that the bootstrapper follows to create a system image:
+Here is the process that the bootstrapper follows to create a system image, where `$PLATFORM` is the target platform:
 
 1. Start web server so that Debian setup preseed file can be accessed from inside the VM
 
-2. Download Debian setup image (`cache/base.iso`) if haven't already
+2. Download Debian setup image (`cache/$PLATFORM/base.iso`) if haven't already
 
-3. Create base install (`cache/baseinstall.img`) if haven't already
+3. Create base install (`cache/$PLATFORM/baseinstall.img`) if haven't already
 
-    a. Create blank system disk (`build/system.img`)
+    a. Create blank system disk (`build/$PLATFORM/system.img`)
 
     b. Boot system disk with QEMU and launch setup with preseed file (setup launch performed by `bootkeys.sh`)
 
     c. Wait for setup to finish (setup is performed without user input, and the VM shuts down and QEMU exits when setup is complete)
 
-    d. Move gShell AppImage into web server (`host/cache/gshell.AppImage`)
+    d. Move gShell AppImage into web server (`host/$PLATFORM/cache/gshell.AppImage`)
 
-    e. Mount system disk image to `build/rootfs` so that root filesystem can be accessed
+    e. Mount system disk image to `build/$PLATFORM/rootfs` so that root filesystem can be accessed
 
     f. Create/modify files in root filesystem to customise system image with LiveG branding, in addition to copying `firstboot.sh` into the root filesystem
 
@@ -82,16 +88,16 @@ Here is the process that the bootstrapper follows to create a system image:
 
 4. Build bootable ISO image from system disk image
 
-    a. Mount system disk image to `build/rootfs`
+    a. Mount system disk image to `build/$PLATFORM/rootfs`
 
-    b. Copy GRUB configuration to root filesystem (`build/rootfs/boot/grub/grub.cfg`) as well as fstab file and filesystem overlay setup script (`build/rootfs/sbin/initoverlay`; run as `init` so is very first process when booting from Linux kernel)
+    b. Copy GRUB configuration to root filesystem (`build/$PLATFORM/rootfs/boot/grub/grub.cfg`) as well as fstab file and filesystem overlay setup script (`build/$PLATFORM/rootfs/sbin/initoverlay`; run as `init` so is very first process when booting from Linux kernel)
 
     c. Make ISO file from root filesystem using `grub-mkrescue`
 
 ## Useful commands
 * `./bootstrap.sh` to start bootstrapping process
 * `rm -rf cache` to clear cache and run through full bootstrapping process
-* `sudo mount -o loop,offset=1048576 build/system.img build/rootfs` to modify root filesystem of system disk image (`sudo` required to modify `build/rootfs` contents)
-* `sudo umount build/rootfs` to unmount root filesystem and save changes to mounted disk image
-* `cp build/system.img cache/system.img && ./makeiso.sh` to make an ISO image after manually modifying `build/system.img`
+* `sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs` to modify root filesystem of system disk image (`sudo` required to modify `build/$PLATFORM/rootfs` contents)
+* `sudo umount build/$PLATFORM/rootfs` to unmount root filesystem and save changes to mounted disk image
+* `cp build/system.img cache/system.img && ./makeiso.sh` to make an ISO image after manually modifying `build/$PLATFORM/system.img`
 * `./reapplyfirstboot.sh` to test the first-boot script after making changes to `firstboot.sh`
