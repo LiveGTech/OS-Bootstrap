@@ -7,65 +7,66 @@
 # https://liveg.tech/os
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
-mkdir -p build
+mkdir -p build/$PLATFORM
 
-if [ -e cache/baseinstall.img ]; then
+if [ -e cache/$PLATFORM/baseinstall.img ]; then
     echo "Base installed image found; using that instead"
 
-    cp cache/baseinstall.img build/system.img
+    cp cache/$PLATFORM/baseinstall.img build/$PLATFORM/system.img
 else
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
-    qemu-img create build/system.img 4G
+    qemu-img create build/$PLATFORM/system.img 4G
 
     ./bootkeys.sh &
 
-    qemu-system-x86_64 \
+    qemu-system-$ARCH \
         -enable-kvm \
         -m 1G \
-        -cdrom cache/base.iso \
-        -hda build/system.img \
+        -cdrom cache/$PLATFORM/base.iso \
+        -hda build/$PLATFORM/system.img \
         -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
         -device virtio-net-pci,netdev=net0 \
-        -monitor tcp:127.0.0.1:8001,server,nowait
+        -monitor tcp:127.0.0.1:8001,server,nowait \
+        $QEMU_ARGS
 
-    cp build/system.img cache/baseinstall.img
+    cp build/$PLATFORM/system.img cache/$PLATFORM/baseinstall.img
 fi
 
-mkdir -p host/cache
-cp cache/gshell.AppImage host/cache/gshell.AppImage
+mkdir -p host/$PLATFORM/cache
+cp cache/$PLATFORM/gshell.AppImage host/$PLATFORM/cache/gshell.AppImage
 
 echo "Mounting disk image to \`build/rootfs\`..."
 
-sudo umount build/rootfs || /bin/true
-mkdir -p build/rootfs
-sudo mount -o loop,offset=1048576 build/system.img build/rootfs
+sudo umount build/$PLATFORM/rootfs || /bin/true
+mkdir -p build/$PLATFORM/rootfs
+sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs
 
-sudo mkdir -p build/rootfs/etc/systemd/system/getty@tty1.service.d
+sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d
 
-sudo tee build/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
+sudo tee build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux
 EOF
 
-sudo cp firstboot.sh build/rootfs/root/firstboot.sh
+sudo cp firstboot.sh build/$PLATFORM/rootfs/root/firstboot.sh
 
-sudo tee -a build/rootfs/root/.bashrc << EOF
+sudo tee -a build/$PLATFORM/rootfs/root/.bashrc << EOF
 ./firstboot.sh
 EOF
 
-sudo tee build/rootfs/etc/hostname << EOF
+sudo tee build/$PLATFORM/rootfs/etc/hostname << EOF
 liveg
 EOF
 
-sudo sed -i -e "s/debian/liveg/g" build/rootfs/etc/hosts
+sudo sed -i -e "s/debian/liveg/g" build/$PLATFORM/rootfs/etc/hosts
 
-sudo tee build/rootfs/etc/issue << EOF
+sudo tee build/$PLATFORM/rootfs/etc/issue << EOF
 LiveG OS \n \l
 EOF
 
-sudo tee build/rootfs/etc/os-release << EOF
+sudo tee build/$PLATFORM/rootfs/etc/os-release << EOF
 NAME="LiveG OS"
 VERSION="0.2.0"
 ID="livegos"
@@ -76,17 +77,18 @@ HOME_URL="https://liveg.tech/os"
 SUPPORT_URL="https://docs.liveg.tech/?product=os"
 EOF
 
-sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/rootfs/etc/sudoers
+sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFORM/rootfs/etc/sudoers
 
-sudo umount build/rootfs
+sudo umount build/$PLATFORM/rootfs
 
 echo "Modification of root file system complete"
 
-qemu-system-x86_64 \
+qemu-system-$ARCH \
     -enable-kvm \
     -m 1G \
-    -hda build/system.img \
+    -hda build/$PLATFORM/system.img \
     -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
-    -device virtio-net-pci,netdev=net0
+    -device virtio-net-pci,netdev=net0 \
+    $QEMU_ARGS
 
-rm cache/system.img
+rm cache/$PLATFORM/system.img
