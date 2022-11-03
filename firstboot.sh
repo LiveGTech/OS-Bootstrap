@@ -45,8 +45,19 @@ echo "Making changes to system directory structure..."
 usermod -m -d /system system
 
 if [ $depInstall = true ]; then
+    echo "Installing dependencies required for adding LiveG APT Repository..."
+
+    apt update
+    apt install -y curl gnupg
+
+    echo "Adding LiveG APT Repository to APT sources..."
+
+    curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
+    curl -s --compressed https://opensource.liveg.tech/liveg-apt/liveg-apt.list -o /etc/apt/sources.list.d/liveg-apt.list
+
     echo "Installing dependencies..."
 
+    apt update
     apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 else
