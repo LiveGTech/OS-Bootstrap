@@ -25,7 +25,7 @@ case $PLATFORM in
         ;;
 esac
 
-if [[ "$2" == "--env-only" ]]; then
+if [[ "$2" = "--env-only" ]]; then
     echo "Applied environment variables for execution of other scripts only"
     return
 fi
