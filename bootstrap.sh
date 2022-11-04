@@ -10,7 +10,7 @@
 export PLATFORM="x86_64"
 export QEMU_ARGS=""
 
-if [[ "$1" != "" ]]; then
+if [[ $1 != "" ]]; then
     export PLATFORM=$1
 fi
 
@@ -25,7 +25,7 @@ case $PLATFORM in
         ;;
 esac
 
-if [[ "$2" = "--env-only" ]]; then
+if [[ $2 = "--env-only" ]]; then
     echo "Applied environment variables for execution of other scripts only"
     return
 fi
