@@ -36,7 +36,7 @@ fi
 mkdir -p host/$PLATFORM/cache
 cp cache/$PLATFORM/gshell.AppImage host/$PLATFORM/cache/gshell.AppImage
 
-echo "Mounting disk image to \`build/rootfs\`..."
+echo "Mounting disk image to \`build/$PLATFORM/rootfs\`..."
 
 sudo umount build/$PLATFORM/rootfs || /bin/true
 mkdir -p build/$PLATFORM/rootfs
