@@ -34,10 +34,9 @@ sudo umount build/$PLATFORM/rootfs
 
 qemu-img create cache/$PLATFORM/test.img 4G
 
-qemu-system-$ARCH \
-    -enable-kvm \
+bash -c "qemu-system-$ARCH \
     -m 2G \
     -cdrom build/$PLATFORM/system.iso \
     -hdb cache/$PLATFORM/test.img \
     -boot order=d \
-    $QEMU_ARGS
+    $QEMU_ARGS"

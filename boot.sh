@@ -13,34 +13,36 @@ if [ -e cache/$PLATFORM/baseinstall.img ]; then
     echo "Base installed image found; using that instead"
 
     cp cache/$PLATFORM/baseinstall.img build/$PLATFORM/system.img
-else
+elif [ $PLATFORM != "rpi" ]; then
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
     qemu-img create build/$PLATFORM/system.img 4G
 
     ./bootkeys.sh &
 
-    qemu-system-$ARCH \
-        -enable-kvm \
+    bash -c "qemu-system-$ARCH \
         -m 1G \
         -cdrom cache/$PLATFORM/base.iso \
         -hda build/$PLATFORM/system.img \
-        -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
-        -device virtio-net-pci,netdev=net0 \
         -monitor tcp:127.0.0.1:8001,server,nowait \
-        $QEMU_ARGS
+        $QEMU_ARGS"
 
     cp build/$PLATFORM/system.img cache/$PLATFORM/baseinstall.img
 fi
 
 mkdir -p host/$PLATFORM/cache
+
+if [ $PLATFORM = "rpi" ]; then
+    echo "Resizing image..."
+
+    qemu-img resize build/$PLATFORM/system.img 4G
+fi
+
 cp cache/$PLATFORM/gshell.AppImage host/$PLATFORM/cache/gshell.AppImage
 
 echo "Mounting disk image to \`build/$PLATFORM/rootfs\`..."
 
-sudo umount build/$PLATFORM/rootfs || /bin/true
-mkdir -p build/$PLATFORM/rootfs
-sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs
+./mount.sh
 
 sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d
 
@@ -60,7 +62,7 @@ sudo tee build/$PLATFORM/rootfs/etc/hostname << EOF
 liveg
 EOF
 
-sudo sed -i -e "s/debian/liveg/g" build/$PLATFORM/rootfs/etc/hosts
+sudo sed -i -E -e "s/debian|raspberrypi/liveg/g" build/$PLATFORM/rootfs/etc/hosts
 
 sudo tee build/$PLATFORM/rootfs/etc/issue << EOF
 LiveG OS \n \l
@@ -79,16 +81,15 @@ EOF
 
 sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFORM/rootfs/etc/sudoers
 
-sudo umount build/$PLATFORM/rootfs
+./unmount.sh
 
 echo "Modification of root file system complete"
 
-qemu-system-$ARCH \
-    -enable-kvm \
+echo build/$PLATFORM/system.img
+
+bash -c "qemu-system-$ARCH \
     -m 1G \
     -hda build/$PLATFORM/system.img \
-    -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
-    -device virtio-net-pci,netdev=net0 \
-    $QEMU_ARGS
+    $QEMU_ARGS"
 
 rm cache/$PLATFORM/system.img

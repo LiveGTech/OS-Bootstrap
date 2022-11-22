@@ -27,10 +27,7 @@ EOF
 
 sudo umount build/$PLATFORM/rootfs
 
-qemu-system-$ARCH \
-    -enable-kvm \
+bash -c "qemu-system-$ARCH \
     -m 1G \
     -hda build/$PLATFORM/system.img \
-    -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
-    -device virtio-net-pci,netdev=net0 \
-    $QEMU_ARGS
+    $QEMU_ARGS"

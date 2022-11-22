@@ -38,7 +38,7 @@ done
 
 echo "Editing hosts file..."
 
-sed -i "s/debian/liveg/" /etc/hosts
+sed -i -E "s/debian|raspberrypi/liveg/" /etc/hosts
 
 echo "Making changes to system directory structure..."
 
