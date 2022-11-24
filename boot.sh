@@ -81,6 +81,21 @@ EOF
 
 sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFORM/rootfs/etc/sudoers
 
+if [ $PLATFORM = "rpi" ]; then
+    sudo umount build/$PLATFORM/bootfs || /bin/true
+    sudo mount /dev/loop0p1 build/$PLATFORM/bootfs
+
+    sudo tee build/$PLATFORM/bootfs/userconf << EOF
+pi:\$6\$c70VpvPsVNCG0YR5\$l5vWWLsLko9Kj65gcQ8qvMkuOoRkEagI90qi3F/Y7rm8eNYZHW8CY6BOIKwMH7a3YYzZYL90zf304cAHLFaZE0
+EOF
+
+    sudo touch build/$PLATFORM/bootfs/ssh
+
+    sudo umount build/$PLATFORM/bootfs
+
+    # TODO: We need to somehow access the system via SSH
+fi
+
 ./unmount.sh
 
 echo "Modification of root file system complete"

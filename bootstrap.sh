@@ -36,6 +36,9 @@ case $PLATFORM in
             -serial mon:stdio \
             -nographic \
             -kernel host/rpi/kernel8.img \
+            -usb \
+            -netdev user,id=net0,hostfwd=tcp::8002-:8000,hostfwd=tcp::2222-:22 \
+            -device usb-net,netdev=net0 \
             -append 'rw earlyprintk=ttyAMA0,115200 loglevel=8 console=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait' \
         "
 
