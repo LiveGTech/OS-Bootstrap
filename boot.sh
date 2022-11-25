@@ -52,6 +52,17 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux
 EOF
 
+if [ $PLATFORM = "rpi" ]; then
+    sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants
+
+    sudo cp host/rpi/serial-getty-firstboot@.service build/$PLATFORM/rootfs/lib/systemd/system/serial-getty-firstboot@.service
+
+    sudo ln -s /lib/systemd/system/serial-getty-firstboot@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
+    sudo ln -s /dev/null build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty@ttyAMA0.service
+
+    sudo sed -i -E -e "s/root:x:/root::/g" build/$PLATFORM/rootfs/etc/passwd
+fi
+
 sudo cp firstboot.sh build/$PLATFORM/rootfs/root/firstboot.sh
 
 sudo tee -a build/$PLATFORM/rootfs/root/.bashrc << EOF
@@ -84,6 +95,9 @@ sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFOR
 if [ $PLATFORM = "rpi" ]; then
     sudo umount build/$PLATFORM/bootfs || /bin/true
     sudo mount /dev/loop0p1 build/$PLATFORM/bootfs
+
+    cp build/$PLATFORM/bootfs/kernel8.img host/$PLATFORM/cache/kernel8.img
+    cp build/$PLATFORM/bootfs/bcm2710-rpi-3-b-plus.dtb host/$PLATFORM/cache/rpi3.dtb
 
     sudo tee build/$PLATFORM/bootfs/userconf << EOF
 pi:\$6\$c70VpvPsVNCG0YR5\$l5vWWLsLko9Kj65gcQ8qvMkuOoRkEagI90qi3F/Y7rm8eNYZHW8CY6BOIKwMH7a3YYzZYL90zf304cAHLFaZE0

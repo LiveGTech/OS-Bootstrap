@@ -32,13 +32,12 @@ case $PLATFORM in
         export QEMU_ARGS="\
             -machine raspi3b \
             -cpu cortex-a53 \
-            -dtb host/rpi/rpi3.dtb \
+            -dtb host/rpi/cache/rpi3.dtb \
             -serial mon:stdio \
             -nographic \
-            -kernel host/rpi/kernel8.img \
+            -kernel host/rpi/cache/kernel8.img \
             -usb \
-            -netdev user,id=net0,hostfwd=tcp::8002-:8000,hostfwd=tcp::2222-:22 \
-            -device usb-net,netdev=net0 \
+            -device usb-net,netdev=net0 -netdev user,id=net0,hostfwd=tcp::5555-:22 \
             -append 'rw earlyprintk=ttyAMA0,115200 loglevel=8 console=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait' \
         "
 
