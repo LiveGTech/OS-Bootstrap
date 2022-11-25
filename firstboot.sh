@@ -7,6 +7,8 @@
 # https://liveg.tech/os
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
+PLATFORM=%PLATFORM
+
 clear
 
 echo " _     _            ____    ___  ____  "
@@ -23,6 +25,7 @@ echo "|____/ \\___/ \\___/ \\__|___/\\__|_|  \\__,_| .__/| .__/|_|_| |_|\\__, |"
 echo "                                        |_|   |_|            |___/"
 echo ""
 echo "The LiveG OS bootstrapping firstboot script is running"
+echo "Platform: $PLATFORM"
 
 depInstall=true
 
@@ -41,6 +44,10 @@ echo "Editing hosts file..."
 sed -i -E "s/debian|raspberrypi/liveg/" /etc/hosts
 
 echo "Making changes to system directory structure..."
+
+if [ $PLATFORM = "rpi" ]; then
+    usermod --login system pi
+fi
 
 usermod -m -d /system system
 
@@ -110,6 +117,12 @@ ExecStart=-/sbin/agetty --autologin system --noclear %I 38400 linux
 EOF
 
 sed -i "/\.\/firstboot\.sh/d" /root/.bashrc
+
+if [ $PLATFORM = "rpi" ]; then
+    sed -i -e "s/root::/root:x:/g" /etc/passwd
+
+    rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
+fi
 
 echo "All done! Shutting down now..."
 

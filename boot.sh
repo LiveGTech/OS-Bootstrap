@@ -60,10 +60,11 @@ if [ $PLATFORM = "rpi" ]; then
     sudo ln -s /lib/systemd/system/serial-getty-firstboot@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
     sudo ln -s /dev/null build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty@ttyAMA0.service
 
-    sudo sed -i -E -e "s/root:x:/root::/g" build/$PLATFORM/rootfs/etc/passwd
+    sudo sed -i -e "s/root:x:/root::/g" build/$PLATFORM/rootfs/etc/passwd
 fi
 
 sudo cp firstboot.sh build/$PLATFORM/rootfs/root/firstboot.sh
+sudo sed -i -e "s/%PLATFORM/$PLATFORM/g" build/$PLATFORM/rootfs/root/firstboot.sh
 
 sudo tee -a build/$PLATFORM/rootfs/root/.bashrc << EOF
 ./firstboot.sh
