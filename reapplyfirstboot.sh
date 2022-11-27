@@ -27,7 +27,7 @@ EOF
 
 sudo umount build/$PLATFORM/rootfs
 
-bash -c "qemu-system-$ARCH \
+bash -c "$QEMU_COMMAND \
     -m 1G \
     -hda build/$PLATFORM/system.img \
     $QEMU_ARGS"

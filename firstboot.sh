@@ -74,39 +74,43 @@ fi
 echo "Downloading gShell..."
 
 mkdir -p /system/bin
-wget http://10.0.2.2:8000/cache/gshell.AppImage -O /system/bin/gshell.AppImage
+cp /host/cache/gshell.AppImage /system/bin/gshell.AppImage
 chmod a+x /system/bin/gshell.AppImage
 
 mkdir -p /system/storage
 mkdir -p /system/logs
 
-wget http://10.0.2.2:8000/device.gsc -O /system/storage/device.gsc
+cp /host/device.gsc /system/storage/device.gsc
 
 echo "Adding startup scripts..."
 
 mkdir -p /system/scripts
 
-wget http://10.0.2.2:8000/startup.sh -O /system/scripts/startup.sh
+cp /host/startup.sh /system/scripts/startup.sh
 chmod a+x /system/scripts/startup.sh
 
-wget http://10.0.2.2:8000/xload.sh -O /system/scripts/xload.sh
+cp /host/xload.sh /system/scripts/xload.sh
 chmod a+x /system/scripts/xload.sh
 
 sudo tee -a /system/.bashrc << EOF
 /system/scripts/startup.sh
 EOF
 
-echo "Adding installation helper files..."
+if [ $PLATFORM = "x86_64" ]; then
+    echo "Adding installation helper files..."
 
-mkdir -p /system/install
+    mkdir -p /system/install
 
-wget http://10.0.2.2:8000/grub.cfg -O /system/install/grub.cfg
-wget http://10.0.2.2:8000/fstab -O /system/install/fstab
-wget http://10.0.2.2:8000/fstab-swap -O /system/install/fstab-swap
+    cp /host/grub.cfg /system/install/grub.cfg
+    cp /host/fstab /system/install/fstab
+    cp /host/fstab-swap /system/install/fstab-swap
+fi
 
-sudo tee -a /system/.bashrc << EOF
-/system/scripts/startup.sh
-EOF
+if [ $PLATFORM = "rpi" ]; then
+    echo "Enabling network management backend..."
+
+    systemctl enable NetworkManager
+fi
 
 echo "Cleaning up..."
 
@@ -122,7 +126,10 @@ if [ $PLATFORM = "rpi" ]; then
     sed -i -e "s/root::/root:x:/g" /etc/passwd
 
     rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
+    rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@tty1.service
 fi
+
+rm -rf /host
 
 echo "All done! Shutting down now..."
 

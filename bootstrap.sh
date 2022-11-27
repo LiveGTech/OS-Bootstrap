@@ -9,6 +9,7 @@
 
 export PLATFORM="x86_64"
 export QEMU_ARGS=""
+export EMULATING=true
 
 if [[ $1 != "" ]]; then
     export PLATFORM=$1
@@ -50,10 +51,26 @@ case $PLATFORM in
         ;;
 esac
 
-if [[ $2 = "--env-only" ]]; then
-    echo "Applied environment variables for execution of other scripts only"
-    return
-fi
+export QEMU_COMMAND="qemu-system-$ARCH"
+
+while test $# -gt 0; do
+    case $1 in
+        --env-only)
+            echo "Applied environment variables for execution of other scripts only"
+            return
+            ;;
+
+        --no-emulation)
+            export EMULATING=false
+            export QEMU_COMMAND=./manual.sh
+
+            echo "Emulation has been disabled; images must be manually run"
+
+            ;;
+    esac
+
+    shift
+done
 
 ./server.sh
 ./getbase.sh

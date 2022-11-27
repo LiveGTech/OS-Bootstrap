@@ -20,7 +20,7 @@ elif [ $PLATFORM != "rpi" ]; then
 
     ./bootkeys.sh &
 
-    bash -c "qemu-system-$ARCH \
+    bash -c "$QEMU_COMMAND \
         -m 1G \
         -cdrom cache/$PLATFORM/base.iso \
         -hda build/$PLATFORM/system.img \
@@ -44,6 +44,9 @@ echo "Mounting disk image to \`build/$PLATFORM/rootfs\`..."
 
 ./mount.sh
 
+sudo mkdir -p build/$PLATFORM/rootfs/host
+sudo cp -a host/$PLATFORM/. build/$PLATFORM/rootfs/host/
+
 sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d
 
 sudo tee build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
@@ -57,8 +60,13 @@ if [ $PLATFORM = "rpi" ]; then
 
     sudo cp host/rpi/serial-getty-firstboot@.service build/$PLATFORM/rootfs/lib/systemd/system/serial-getty-firstboot@.service
 
-    sudo ln -s /lib/systemd/system/serial-getty-firstboot@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
-    sudo ln -s /dev/null build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty@ttyAMA0.service
+    if [ $EMULATING = true ]; then
+        sudo ln -s /lib/systemd/system/serial-getty-firstboot@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
+        sudo ln -s /dev/null build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty@ttyAMA0.service
+    else
+        sudo ln -s /lib/systemd/system/serial-getty-firstboot@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty-firstboot@tty1.service
+        sudo ln -s /dev/null build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty@tty1.service
+    fi
 
     sudo sed -i -e "s/root:x:/root::/g" build/$PLATFORM/rootfs/etc/passwd
 fi
@@ -107,8 +115,6 @@ EOF
     sudo touch build/$PLATFORM/bootfs/ssh
 
     sudo umount build/$PLATFORM/bootfs
-
-    # TODO: We need to somehow access the system via SSH
 fi
 
 ./unmount.sh
@@ -117,7 +123,7 @@ echo "Modification of root file system complete"
 
 echo build/$PLATFORM/system.img
 
-bash -c "qemu-system-$ARCH \
+bash -c "$QEMU_COMMAND \
     -m 1G \
     -hda build/$PLATFORM/system.img \
     $QEMU_ARGS"

@@ -34,7 +34,7 @@ sudo umount build/$PLATFORM/rootfs
 
 qemu-img create cache/$PLATFORM/test.img 4G
 
-bash -c "qemu-system-$ARCH \
+bash -c "$QEMU_COMMAND \
     -m 2G \
     -cdrom build/$PLATFORM/system.iso \
     -hdb cache/$PLATFORM/test.img \
