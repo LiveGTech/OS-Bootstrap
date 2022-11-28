@@ -16,6 +16,10 @@ if xset q &> /dev/null; then
     exit
 fi
 
+if [ -f /system/stage2 ]; then
+    /system/scripts/stage2.sh
+fi
+
 while true; do
     clear
     startx /system/scripts/xload.sh

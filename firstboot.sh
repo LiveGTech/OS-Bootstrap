@@ -39,6 +39,13 @@ while test $# -gt 0; do
     shift
 done
 
+if [ $PLATFORM = "rpi" ]; then
+    echo "Expanding filesystem..."
+
+    parted -m /dev/mmcblk0 u s resizepart 2 8388608 # 4 GiB in 512-byte sectors
+    resize2fs /dev/mmcblk0p2
+fi
+
 echo "Editing hosts file..."
 
 sed -i -E "s/debian|raspberrypi/liveg/" /etc/hosts
@@ -50,7 +57,7 @@ if [ $PLATFORM = "rpi" ]; then
     groupmod -n system pi
 fi
 
-usermod -m -l /system system
+usermod -m -d /system system
 
 passwd -d system
 
@@ -113,6 +120,13 @@ if [ $PLATFORM = "rpi" ]; then
     echo "Enabling network management backend..."
 
     systemctl enable NetworkManager
+
+    echo "Adding Stage 2 script..."
+
+    cp /host/stage2.sh /system/scripts/stage2.sh
+    chmod a+x /system/scripts/stage2.sh
+
+    touch /system/stage2
 fi
 
 echo "Cleaning up..."
