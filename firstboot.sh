@@ -47,9 +47,12 @@ echo "Making changes to system directory structure..."
 
 if [ $PLATFORM = "rpi" ]; then
     usermod --login system pi
+    groupmod -n system pi
 fi
 
-usermod -m -d /system system
+usermod -m -l /system system
+
+passwd -d system
 
 if [ $depInstall = true ]; then
     echo "Installing dependencies required for adding LiveG APT Repository..."
