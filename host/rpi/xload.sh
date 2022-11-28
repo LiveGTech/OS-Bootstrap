@@ -8,4 +8,4 @@
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
 cd /system/bin
-./gshell.AppImage --appimage-extract-and-run -- --real > /system/logs/gshell.log
+./gshell.AppImage -- --real > /system/logs/gshell.log
