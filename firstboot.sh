@@ -121,6 +121,10 @@ if [ $PLATFORM = "rpi" ]; then
 
     systemctl enable NetworkManager
 
+    echo "Changing system behaviour..."
+
+    cp /usr/share/raspi-config/10-blanking.conf /etc/X11/xorg.conf.d
+
     echo "Adding Stage 2 script..."
 
     cp /host/stage2.sh /system/scripts/stage2.sh
