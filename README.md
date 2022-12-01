@@ -98,6 +98,7 @@ Here is the process that the bootstrapper follows to create a system image, wher
 ## Useful commands
 * `./bootstrap.sh` to start bootstrapping process
 * `./bootstrap.sh --env-only` to set environment variables for shell (to execute scripts such as `mount.sh` and `unmount.sh`)
+* `./boostrap.sh --no-emulation` to prevent image emulation; images must be flashed to and processed on real hardware and then confirmed in the OS bootstrapper after copying image back
 * `rm -rf cache` to clear cache and run through full bootstrapping process
 * `./mount.sh` to modify root filesystem of system disk image (root privileges required)
 * `./unmount.sh` to unmount root filesystem and save changes to mounted disk image
