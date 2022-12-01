@@ -37,7 +37,7 @@ Bootstrapping LiveG OS will take around 8 minutes with KVM or 37 minutes without
 * It takes 5 minutes to run the firstboot script to completion (dependent on speed of internet connection)
 * It takes 1 minute to build the ISO file
 
-Many parts of the bootstrapping process are cached in the `cache/` folder, and so once fully-bootstrapped, bootstrapping again will be quicker to perform.
+Many parts of the bootstrapping process are cached in the `cache/` folder, and so once fully-bootstrapped, bootstrapping again will be quicker to perform. When building some platforms, some steps do not apply, and so the bootstrapping time could vary.
 
 To check whether KVM is enabled, install the `cpu-checker` package, then run the `kvm-ok` command.
 
@@ -58,6 +58,7 @@ You can also specify the platform type to target as an argument:
 
 ```bash
 $ ./bootstrap.sh x86_64 # Modern PCs with typical Intel or AMD chipset
+$ ./bootstrap.sh rpi # Raspberry Pi 3/4 computers and CM3/4 SoM chips
 ```
 
 ## Distributing
@@ -68,17 +69,17 @@ Here is the process that the bootstrapper follows to create a system image, wher
 
 1. Start web server so that Debian setup preseed file can be accessed from inside the VM
 
-2. Download Debian setup image (`cache/$PLATFORM/base.iso`) if haven't already
+2. Download Debian setup image (`cache/$PLATFORM/base.iso`) if haven't already (skipped if platform is `rpi`)
 
-3. Create base install (`cache/$PLATFORM/baseinstall.img`) if haven't already
+3. Create base install (`cache/$PLATFORM/baseinstall.img`) if haven't already (downloaded instead if platform is `rpi`)
 
-    a. Create blank system disk (`build/$PLATFORM/system.img`)
+    a. Create blank system disk (`build/$PLATFORM/system.img`) (skipped if platform is `rpi`)
 
-    b. Boot system disk with QEMU and launch setup with preseed file (setup launch performed by `bootkeys.sh`)
+    b. Boot system disk with QEMU and launch setup with preseed file (setup launch performed by `bootkeys.sh`) (skipped if platform is `rpi`)
 
-    c. Wait for setup to finish (setup is performed without user input, and the VM shuts down and QEMU exits when setup is complete)
+    c. Wait for setup to finish (setup is performed without user input, and the VM shuts down and QEMU exits when setup is complete) (skipped if platform is `rpi`)
 
-    d. Move gShell AppImage into web server (`host/$PLATFORM/cache/gshell.AppImage`)
+    d. Move gShell AppImage into host storage (`host/$PLATFORM/cache/gshell.AppImage`)
 
     e. Mount system disk image to `build/$PLATFORM/rootfs` so that root filesystem can be accessed
 
@@ -86,7 +87,7 @@ Here is the process that the bootstrapper follows to create a system image, wher
 
     g. Unmount root filesystem, writing changes to system disk image
 
-4. Build bootable ISO image from system disk image
+4. Build bootable ISO image from system disk image (skipped if platform is `rpi`)
 
     a. Mount system disk image to `build/$PLATFORM/rootfs`
 
@@ -96,8 +97,9 @@ Here is the process that the bootstrapper follows to create a system image, wher
 
 ## Useful commands
 * `./bootstrap.sh` to start bootstrapping process
+* `./bootstrap.sh --env-only` to set environment variables for shell (to execute scripts such as `mount.sh` and `unmount.sh`)
 * `rm -rf cache` to clear cache and run through full bootstrapping process
-* `sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs` to modify root filesystem of system disk image (`sudo` required to modify `build/$PLATFORM/rootfs` contents)
-* `sudo umount build/$PLATFORM/rootfs` to unmount root filesystem and save changes to mounted disk image
+* `./mount.sh` to modify root filesystem of system disk image (root privileges required)
+* `./unmount.sh` to unmount root filesystem and save changes to mounted disk image
 * `cp build/system.img cache/system.img && ./makeiso.sh` to make an ISO image after manually modifying `build/$PLATFORM/system.img`
 * `./reapplyfirstboot.sh` to test the first-boot script after making changes to `firstboot.sh`
