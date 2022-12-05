@@ -37,7 +37,7 @@ Bootstrapping LiveG OS will take around 8 minutes with KVM or 37 minutes without
 * It takes 5 minutes to run the firstboot script to completion (dependent on speed of internet connection)
 * It takes 1 minute to build the ISO file
 
-Many parts of the bootstrapping process are cached in the `cache/` folder, and so once fully-bootstrapped, bootstrapping again will be quicker to perform.
+Many parts of the bootstrapping process are cached in the `cache/` folder, and so once fully-bootstrapped, bootstrapping again will be quicker to perform. When building some platforms, some steps do not apply, and so the bootstrapping time could vary.
 
 To check whether KVM is enabled, install the `cpu-checker` package, then run the `kvm-ok` command.
 
@@ -54,44 +54,53 @@ $ ./bootstrap.sh
 
 When complete, the distributable ISO file will be available at `build/system.iso`.
 
+You can also specify the platform type to target as an argument:
+
+```bash
+$ ./bootstrap.sh x86_64 # Modern PCs with typical Intel or AMD chipset
+$ ./bootstrap.sh rpi # Raspberry Pi 3/4 computers and CM3/4 SoM chips
+```
+
 ## Distributing
 Ensure that the information in `boot.sh` is up-to-date (with regards to details such as version information) before bootstrapping and distributing. The final ISO file can then be distributed.
 
 ## Pipeline architecture
-Here is the process that the bootstrapper follows to create a system image:
+Here is the process that the bootstrapper follows to create a system image, where `$PLATFORM` is the target platform:
 
 1. Start web server so that Debian setup preseed file can be accessed from inside the VM
 
-2. Download Debian setup image (`cache/base.iso`) if haven't already
+2. Download Debian setup image (`cache/$PLATFORM/base.iso`) if haven't already (skipped if platform is `rpi`)
 
-3. Create base install (`cache/baseinstall.img`) if haven't already
+3. Create base install (`cache/$PLATFORM/baseinstall.img`) if haven't already (downloaded instead if platform is `rpi`)
 
-    a. Create blank system disk (`build/system.img`)
+    a. Create blank system disk (`build/$PLATFORM/system.img`) (skipped if platform is `rpi`)
 
-    b. Boot system disk with QEMU and launch setup with preseed file (setup launch performed by `bootkeys.sh`)
+    b. Boot system disk with QEMU and launch setup with preseed file (setup launch performed by `bootkeys.sh`) (skipped if platform is `rpi`)
 
-    c. Wait for setup to finish (setup is performed without user input, and the VM shuts down and QEMU exits when setup is complete)
+    c. Wait for setup to finish (setup is performed without user input, and the VM shuts down and QEMU exits when setup is complete) (skipped if platform is `rpi`)
 
-    d. Move gShell AppImage into web server (`host/cache/gshell.AppImage`)
+    d. Move gShell AppImage into host storage (`host/$PLATFORM/cache/gshell.AppImage`)
 
-    e. Mount system disk image to `build/rootfs` so that root filesystem can be accessed
+    e. Mount system disk image to `build/$PLATFORM/rootfs` so that root filesystem can be accessed
 
     f. Create/modify files in root filesystem to customise system image with LiveG branding, in addition to copying `firstboot.sh` into the root filesystem
 
     g. Unmount root filesystem, writing changes to system disk image
 
-4. Build bootable ISO image from system disk image
+4. Build bootable ISO image from system disk image (skipped if platform is `rpi`)
 
-    a. Mount system disk image to `build/rootfs`
+    a. Mount system disk image to `build/$PLATFORM/rootfs`
 
-    b. Copy GRUB configuration to root filesystem (`build/rootfs/boot/grub/grub.cfg`) as well as fstab file and filesystem overlay setup script (`build/rootfs/sbin/initoverlay`; run as `init` so is very first process when booting from Linux kernel)
+    b. Copy GRUB configuration to root filesystem (`build/$PLATFORM/rootfs/boot/grub/grub.cfg`) as well as fstab file and filesystem overlay setup script (`build/$PLATFORM/rootfs/sbin/initoverlay`; run as `init` so is very first process when booting from Linux kernel)
 
     c. Make ISO file from root filesystem using `grub-mkrescue`
 
 ## Useful commands
 * `./bootstrap.sh` to start bootstrapping process
+* `./bootstrap.sh --env-only` to set environment variables for shell (to execute scripts such as `mount.sh` and `unmount.sh`)
+* `./boostrap.sh --no-emulation` to prevent image emulation; images must be flashed to and processed on real hardware and then confirmed in the OS bootstrapper after copying image back
 * `rm -rf cache` to clear cache and run through full bootstrapping process
-* `sudo mount -o loop,offset=1048576 build/system.img build/rootfs` to modify root filesystem of system disk image (`sudo` required to modify `build/rootfs` contents)
-* `sudo umount build/rootfs` to unmount root filesystem and save changes to mounted disk image
-* `cp build/system.img cache/system.img && ./makeiso.sh` to make an ISO image after manually modifying `build/system.img`
+* `./mount.sh` to modify root filesystem of system disk image (root privileges required)
+* `./unmount.sh` to unmount root filesystem and save changes to mounted disk image
+* `cp build/system.img cache/system.img && ./makeiso.sh` to make an ISO image after manually modifying `build/$PLATFORM/system.img`
 * `./reapplyfirstboot.sh` to test the first-boot script after making changes to `firstboot.sh`
