@@ -10,7 +10,7 @@
 ./unmount.sh # Just to make sure that this mount succeeds
 
 case $PLATFORM in
-    x86_64)
+    x86_64|pinephone)
         mkdir -p build/$PLATFORM/rootfs
         sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;

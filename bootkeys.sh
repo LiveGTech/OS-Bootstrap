@@ -47,9 +47,13 @@ function typein {
     done
 }
 
-sleep 4
-monitorexec "sendkey esc"
-sleep 1
-typein "auto url=http://10.0.2.2:8000/preseed.cfg"
-sleep 1
-monitorexec "sendkey ret"
+if [ $PLATFORM = "pinephone" ]; then
+    # TODO: Load preseed config
+else
+    sleep 4
+    monitorexec "sendkey esc"
+    sleep 1
+    typein "auto url=http://10.0.2.2:8000/preseed.cfg"
+    sleep 1
+    monitorexec "sendkey ret"
+fi

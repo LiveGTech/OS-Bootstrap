@@ -12,7 +12,7 @@ mkdir -p build/$PLATFORM
 if [ -e cache/$PLATFORM/baseinstall.img ]; then
     echo "Base installed image found; using that instead"
 
-    cp cache/$PLATFORM/baseinstall.img build/$PLATFORM/system.img
+    cp cache/$PLATFORM/baseinstall.img build/$PLATFORM/system.img    
 elif [ $PLATFORM != "rpi" ]; then
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 

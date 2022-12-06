@@ -45,6 +45,21 @@ case $PLATFORM in
 
         ;;
 
+    pinephone)
+        export ARCH="aarch64"
+
+        export QEMU_ARGS="\
+            -machine virt \
+            -cpu cortex-a53 \
+            -bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
+            -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
+            -device virtio-net-pci,netdev=net0 \
+            -device usb-ehci \
+            -device usb-kbd \
+        "
+
+        ;;
+
     *)
         echo "Invalid platform specified" >&2
         exit 1
@@ -77,8 +92,8 @@ done
 ./boot.sh
 
 case $PLATFORM in
-    rpi)
-        # Raspberry Pis don't need an ISO file; just use image file instead
+    rpi|pinephone)
+        # These devices don't need an ISO file; just use image file instead
         ;;
 
     *)
