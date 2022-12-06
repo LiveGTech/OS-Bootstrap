@@ -32,6 +32,14 @@ function typein {
                 monitorexec "sendkey shift-semicolon"
                 ;;
 
+            "-")
+                monitorexec "sendkey minus"
+                ;;
+
+            "_")
+                monitorexec "sendkey shift-minus"
+                ;;
+
             "/")
                 monitorexec "sendkey slash"
                 ;;
@@ -48,7 +56,30 @@ function typein {
 }
 
 if [ $PLATFORM = "pinephone" ]; then
-    # TODO: Load preseed config
+    sleep 6
+    monitorexec "sendkey c"
+    sleep 1
+
+    typein "linux /install.a64/vmlinuz auto-install/enable=true \
+preseed/url=http://10.0.2.2:8000/preseed.cfg \
+cdrom-detect/load_media=false \
+cdrom-detect/manual_config=true \
+--- quiet"
+
+# FIXME: Use SCSI instead of VirtIO so we get /dev/sda instead of /dev/vda
+# cdrom-detect/load_media=false
+# cdrom-detect/manual_config=true
+# cdrom-detect/cdrom_module=none
+# cdrom-detect/cdrom_device=/dev/vda
+
+sleep 1
+
+    monitorexec "sendkey ret"
+    typein "initrd /install.a64/initrd.gz"
+    monitorexec "sendkey ret"
+    typein "boot"
+    sleep 1
+    monitorexec "sendkey ret"
 else
     sleep 4
     monitorexec "sendkey esc"
