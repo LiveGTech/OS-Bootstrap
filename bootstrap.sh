@@ -56,6 +56,7 @@ case $PLATFORM in
             -device virtio-net-pci,netdev=net0 \
             -device usb-ehci \
             -device usb-kbd \
+            -monitor tcp:127.0.0.1:8001,server,nowait \
         "
 
         ;;

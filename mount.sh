@@ -10,7 +10,7 @@
 ./unmount.sh # Just to make sure that this mount succeeds
 
 case $PLATFORM in
-    x86_64|pinephone)
+    x86_64)
         mkdir -p build/$PLATFORM/rootfs
         sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;
@@ -18,5 +18,10 @@ case $PLATFORM in
     rpi)
         sudo losetup -P /dev/loop0 build/$PLATFORM/system.img
         sudo mount /dev/loop0p2 build/$PLATFORM/rootfs
+        ;;
+
+    pinephone)
+        mkdir -p build/$PLATFORM/rootfs
+        sudo mount -o loop,offset=511705088 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;
 esac

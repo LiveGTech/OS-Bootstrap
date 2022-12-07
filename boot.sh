@@ -62,11 +62,19 @@ sudo cp -a host/$PLATFORM/. build/$PLATFORM/rootfs/host/
 
 sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d
 
-sudo tee build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
-[Service]
-ExecStart=
-ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux
+if [ $PLATFORM = "pinephone" ]; then
+    sudo tee build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
+    [Service]
+    ExecStart=
+    ExecStart=-/sbin/agetty --autologin root --noclear ttyAMA0 115200 vt102
 EOF
+else
+    sudo tee build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
+    [Service]
+    ExecStart=
+    ExecStart=-/sbin/agetty --autologin root --noclear %I 38400 linux
+EOF
+fi
 
 if [ $PLATFORM = "rpi" ]; then
     sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants
@@ -131,6 +139,16 @@ EOF
 fi
 
 ./unmount.sh
+
+if [ $PLATFORM = "pinephone" ]; then
+    sudo umount build/$PLATFORM/bootfs || /bin/true
+    sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/bootfs
+
+    sudo mkdir -p build/$PLATFORM/bootfs/EFI/boot
+    sudo cp build/$PLATFORM/bootfs/EFI/debian/grubaa64.efi build/$PLATFORM/bootfs/EFI/boot/bootaa64.efi
+
+    sudo umount build/$PLATFORM/bootfs
+fi
 
 echo "Modification of root file system complete"
 
