@@ -20,12 +20,25 @@ elif [ $PLATFORM != "rpi" ]; then
 
     ./bootkeys.sh &
 
-    bash -c "$QEMU_COMMAND \
-        -m 1G \
-        -cdrom cache/$PLATFORM/base.iso \
-        -hda build/$PLATFORM/system.img \
-        -monitor tcp:127.0.0.1:8001,server,nowait \
-        $QEMU_ARGS"
+    if [ $PLATFORM = "pinephone" ]; then
+        bash -c "$QEMU_COMMAND \
+            -m 1G \
+            -device virtio-scsi-pci,id=scsi0 \
+            -device scsi-cd,bus=scsi0.0,drive=cdrom0 \
+            -drive id=cdrom0,format=raw,if=none,file=cache/$PLATFORM/base.iso \
+            -device virtio-scsi-pci,id=scsi1 \
+            -device scsi-hd,bus=scsi1.0,drive=hd0 \
+            -drive id=hd0,format=raw,if=none,file=build/$PLATFORM/system.img \
+            -monitor tcp:127.0.0.1:8001,server,nowait \
+            $QEMU_ARGS"
+    else
+        bash -c "$QEMU_COMMAND \
+            -m 1G \
+            -cdrom cache/$PLATFORM/base.iso \
+            -hda build/$PLATFORM/system.img \
+            -monitor tcp:127.0.0.1:8001,server,nowait \
+            $QEMU_ARGS"
+    fi
 
     cp build/$PLATFORM/system.img cache/$PLATFORM/baseinstall.img
 fi

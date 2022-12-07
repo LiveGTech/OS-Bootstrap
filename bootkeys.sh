@@ -56,11 +56,18 @@ function typein {
 }
 
 if [ $PLATFORM = "pinephone" ]; then
-    sleep 6
+    sleep 7
     monitorexec "sendkey c"
     sleep 1
 
-    typein "linux /install.a64/vmlinuz auto-install/enable=true \
+    typein "linux /install.a64/vmlinuz \
+auto-install/enable=true \
+netcfg/get_hostname=debian \
+netcfg/get_domain=debian "
+
+    sleep 1
+
+    typein "\
 preseed/url=http://10.0.2.2:8000/preseed.cfg \
 cdrom-detect/load_media=false \
 cdrom-detect/manual_config=true \
