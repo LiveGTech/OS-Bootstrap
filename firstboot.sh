@@ -29,6 +29,8 @@ echo "Platform: $PLATFORM"
 
 depInstall=true
 
+dhclient
+
 while test $# -gt 0; do
     case $1 in
         --skip-dep-install)

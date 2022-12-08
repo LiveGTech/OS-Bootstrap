@@ -51,6 +51,7 @@ case $PLATFORM in
         export QEMU_ARGS="\
             -machine virt \
             -cpu cortex-a53 \
+            -smp 8 \
             -bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
             -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
             -device virtio-net-pci,netdev=net0 \

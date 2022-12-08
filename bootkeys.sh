@@ -73,12 +73,6 @@ cdrom-detect/load_media=false \
 cdrom-detect/manual_config=true \
 --- quiet"
 
-# FIXME: Use SCSI instead of VirtIO so we get /dev/sda instead of /dev/vda
-# cdrom-detect/load_media=false
-# cdrom-detect/manual_config=true
-# cdrom-detect/cdrom_module=none
-# cdrom-detect/cdrom_device=/dev/vda
-
 sleep 1
 
     monitorexec "sendkey ret"
