@@ -49,9 +49,11 @@ sudo cp host/$PLATFORM/fstab build/$PLATFORM/image-rootfs/etc/fstab
 sudo rsync -ar --info=progress2 --no-inc-recursive build/$PLATFORM/image-rootfs/boot/ build/$PLATFORM/image-bootfs
 
 sudo mkdir -p build/$PLATFORM/image-bootfs/dtb/allwinner
-
 sudo rsync -ar --info=progress2 --no-inc-recursive host/$PLATFORM/dtb/ build/$PLATFORM/image-bootfs/dtb/allwinner
 
-# TODO: Copy extlinux file for U-Boot
+sudo mkdir -p build/$PLATFORM/image-bootfs/extlinux
+sudo cp host/$PLATFORM/extlinux.conf build/$PLATFORM/image-bootfs/extlinux/extlinux.conf
+
+# TODO: Get p-boot working: https://megous.com/git/p-boot/tree/README
 
 ./unmount.sh
