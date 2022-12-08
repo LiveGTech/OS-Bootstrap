@@ -94,11 +94,17 @@ done
 ./boot.sh
 
 case $PLATFORM in
-    rpi|pinephone)
+    rpi)
         # These devices don't need an ISO file; just use image file instead
         ;;
 
+    pinephone)
+        # Requires a custom-built image as opposed to an ISO file
+        ./makeimage.sh
+        ;;
+
     *)
+        # Build an ISO file from the current image file
         ./makeiso.sh
         ;;
 esac

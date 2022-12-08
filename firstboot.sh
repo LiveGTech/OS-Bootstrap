@@ -29,7 +29,10 @@ echo "Platform: $PLATFORM"
 
 depInstall=true
 
-dhclient
+if [ $PLATFORM = "pinephone" ]; then
+    # Debian `arm64` doesn't have `dhcpcd` included, so we'll need to start up a DHCP server manually
+    dhclient
+fi
 
 while test $# -gt 0; do
     case $1 in
@@ -76,9 +79,25 @@ if [ $depInstall = true ]; then
 
     echo "Installing dependencies..."
 
+    if [ $PLATFORM = "pinephone" ]; then
+    tee /etc/apt/sources.list.d/sid.list << EOF
+deb http://http.us.debian.org/debian sid main non-free
+deb-src http://http.us.debian.org/debian sid main non-free
+EOF
+
+        tee /etc/apt/sources.list.d/buster.list << EOF
+deb http://http.us.debian.org/debian bullseye non-free
+deb-src http://http.us.debian.org/debian bullseye non-free
+EOF
+    fi
+
     apt update
     apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+
+    if [ $PLATFORM = "pinephone" ]; then
+        DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
+    fi
 else
     echo "Skipped installation of dependencies"
 fi
