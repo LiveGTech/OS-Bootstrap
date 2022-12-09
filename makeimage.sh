@@ -54,6 +54,16 @@ sudo rsync -ar --info=progress2 --no-inc-recursive host/$PLATFORM/dtb/ build/$PL
 sudo mkdir -p build/$PLATFORM/image-bootfs/extlinux
 sudo cp host/$PLATFORM/extlinux.conf build/$PLATFORM/image-bootfs/extlinux/extlinux.conf
 
-# TODO: Get p-boot working: https://megous.com/git/p-boot/tree/README
+if [ $PLATFORM = "pinephone" ]; then
+    echo "Adding p-boot..."
+
+    # TODO: Fix partition creation so that we have a boot partition of 0x83 from 4 to 64 MiB
+
+    host/$PLATFORM/p-boot/p-boot-conf host/$PLATFORM/p-boot build/$PLATFORM/image.img
+    dd if=host/$PLATFORM/p-boot/p-boot.bin of=build/$PLATFORM/image.img bs=1024 seek=8
+    sync
+
+    echo "p-boot added"
+fi
 
 ./unmount.sh
