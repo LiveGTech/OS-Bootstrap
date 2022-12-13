@@ -15,14 +15,12 @@ qemu-img create build/$PLATFORM/image.img +4G
     echo n # New partition
     echo p # Primary
     echo 1 # Partition number
-    echo # Default first sector
+    echo 8192 # First sector at 4 MiB
     echo +248M # 248 MiB space
-    echo t # Change partition type
-    echo b # Choose FAT32
     echo n # New partition
     echo p # Primary
     echo 2 # Partition number
-    echo # Default first sector
+    echo 516096 # First sector after first partition
     echo # Default last sector (fill remaining to end)
     echo w # Write and exit
 ) | fdisk build/$PLATFORM/image.img
@@ -56,8 +54,6 @@ sudo cp host/$PLATFORM/extlinux.conf build/$PLATFORM/image-bootfs/extlinux/extli
 
 if [ $PLATFORM = "pinephone" ]; then
     echo "Adding p-boot..."
-
-    # TODO: Fix partition creation so that we have a boot partition of 0x83 from 4 to 64 MiB
 
     host/$PLATFORM/p-boot/p-boot-conf host/$PLATFORM/p-boot build/$PLATFORM/image.img
     dd if=host/$PLATFORM/p-boot/p-boot.bin of=build/$PLATFORM/image.img bs=1024 seek=8
