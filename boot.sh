@@ -20,7 +20,7 @@ elif [ $PLATFORM != "rpi" ]; then
 
     ./bootkeys.sh &
 
-    if [ $PLATFORM = "pinephone" ]; then
+    if [ $PLATFORM = "arm64" ]; then
         bash -c "$QEMU_COMMAND \
             -m 4G \
             -device virtio-scsi-pci,id=scsi0 \
@@ -61,7 +61,7 @@ sudo cp -a host/$PLATFORM/. build/$PLATFORM/rootfs/host/
 
 sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d
 
-if [ $PLATFORM = "pinephone" ]; then
+if [ $PLATFORM = "arm64" ]; then
     sudo tee build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
     [Service]
     ExecStart=
@@ -139,7 +139,7 @@ fi
 
 ./unmount.sh
 
-if [ $PLATFORM = "pinephone" ]; then
+if [ $PLATFORM = "arm64" ]; then
     sudo umount build/$PLATFORM/bootfs || /bin/true
     sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/bootfs
 

@@ -45,7 +45,7 @@ case $PLATFORM in
 
         ;;
 
-    pinephone)
+    arm64)
         export ARCH="aarch64"
 
         export QEMU_ARGS="\
@@ -96,11 +96,6 @@ done
 case $PLATFORM in
     rpi)
         # These devices don't need an ISO file; just use image file instead
-        ;;
-
-    pinephone)
-        # Requires a custom-built image as opposed to an ISO file
-        ./makeimage.sh
         ;;
 
     *)

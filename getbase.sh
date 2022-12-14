@@ -26,7 +26,7 @@ case $PLATFORM in
 
         ;;
 
-    pinephone)
+    arm64)
         wget -nc https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-11.5.0-arm64-netinst.iso -O cache/$PLATFORM/base.iso
         ;;
 esac

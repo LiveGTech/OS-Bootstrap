@@ -1,8 +1,0 @@
-# LiveG OS Bootstrap Toolchain
-# 
-# Copyright (C) LiveG. All Rights Reserved.
-# 
-# https://liveg.tech/os
-# Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
-
-LABEL=LiveG-OS  /   ext4    errors=remount-ro  0   1

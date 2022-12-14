@@ -55,7 +55,7 @@ function typein {
     done
 }
 
-if [ $PLATFORM = "pinephone" ]; then
+if [ $PLATFORM = "arm64" ]; then
     sleep 7
     monitorexec "sendkey c"
     sleep 1

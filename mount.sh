@@ -20,7 +20,7 @@ case $PLATFORM in
         sudo mount /dev/loop0p2 build/$PLATFORM/rootfs
         ;;
 
-    pinephone)
+    arm64)
         mkdir -p build/$PLATFORM/rootfs
         sudo mount -o loop,offset=511705088 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;

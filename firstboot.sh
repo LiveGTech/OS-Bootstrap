@@ -29,7 +29,7 @@ echo "Platform: $PLATFORM"
 
 depInstall=true
 
-if [ $PLATFORM = "pinephone" ]; then
+if [ $PLATFORM = "arm64" ]; then
     # Debian `arm64` doesn't have `dhcpcd` included, so we'll need to start up a DHCP server manually
     dhclient
 fi
