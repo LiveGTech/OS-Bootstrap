@@ -9,10 +9,14 @@
 
 mkdir -p build/$PLATFORM
 
-if [ -e cache/$PLATFORM/baseinstall.img ]; then
+if [ $PLATFORM = "pinephone" ] && ! [ -e cache/$PLATFORM/system.img ]; then
+    echo "Creating new base installed image..."
+
+    ./makeimage.sh
+elif [ -e cache/$PLATFORM/baseinstall.img ]; then
     echo "Base installed image found; using that instead"
 
-    cp cache/$PLATFORM/baseinstall.img build/$PLATFORM/system.img    
+    cp cache/$PLATFORM/baseinstall.img build/$PLATFORM/system.img
 elif [ $PLATFORM != "rpi" ]; then
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
@@ -151,7 +155,9 @@ fi
 
 echo "Modification of root file system complete"
 
-echo build/$PLATFORM/system.img
+if [ $PLATFORM = "pinephone" ]; then
+    ./makebootable.sh
+fi
 
 bash -c "$QEMU_COMMAND \
     -m 1G \

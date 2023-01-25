@@ -45,7 +45,7 @@ case $PLATFORM in
 
         ;;
 
-    arm64)
+    arm64|pinephone)
         export ARCH="aarch64"
 
         export QEMU_ARGS="\
@@ -94,7 +94,7 @@ done
 ./boot.sh
 
 case $PLATFORM in
-    rpi)
+    rpi|pinephone)
         # These devices don't need an ISO file; just use image file instead
         ;;
 
