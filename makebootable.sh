@@ -11,6 +11,7 @@ echo "Writing bootloader..."
 
 ./mount.sh
 
+sudo cp host/$PLATFORM/fstab build/$PLATFORM/rootfs/etc/fstab
 sudo host/$PLATFORM/p-boot/p-boot-conf host/$PLATFORM/p-boot /dev/loop0p1
 
 ./unmount.sh

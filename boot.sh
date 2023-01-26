@@ -82,7 +82,7 @@ fi
 if [ $PLATFORM = "rpi" ]; then
     sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants
 
-    sudo cp host/rpi/serial-getty-firstboot@.service build/$PLATFORM/rootfs/lib/systemd/system/serial-getty-firstboot@.service
+    sudo cp host/$PLATFORM/serial-getty-firstboot@.service build/$PLATFORM/rootfs/lib/systemd/system/serial-getty-firstboot@.service
 
     if [ $EMULATING = true ]; then
         sudo ln -s /lib/systemd/system/serial-getty-firstboot@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
@@ -93,6 +93,13 @@ if [ $PLATFORM = "rpi" ]; then
     fi
 
     sudo sed -i -e "s/root:x:/root::/g" build/$PLATFORM/rootfs/etc/passwd
+fi
+
+if [ $PLATFORM = "pinephone" ]; then
+    sudo rm build/$PLATFORM/rootfs/etc/systemd/system/display-manager.service
+
+    sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants
+    sudo ln -s /lib/systemd/system/getty@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/getty@tty1.service
 fi
 
 sudo cp firstboot.sh build/$PLATFORM/rootfs/root/firstboot.sh

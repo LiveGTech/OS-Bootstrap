@@ -51,6 +51,16 @@ if [ $PLATFORM = "rpi" ]; then
     resize2fs /dev/mmcblk0p2
 fi
 
+if [ $PLATFORM = "pinephone" ]; then
+    echo "Launching network configuration interface (requires user input)..."
+
+    nmtui # This is because there's no easy way to get Ethernet, so we must connect to Wi-Fi instead
+
+    echo "Setting system clock..."
+
+    sudo hwclock --hctosys
+fi
+
 echo "Editing hosts file..."
 
 sed -i -E "s/debian|raspberrypi/liveg/" /etc/hosts
@@ -60,6 +70,11 @@ echo "Making changes to system directory structure..."
 if [ $PLATFORM = "rpi" ]; then
     usermod --login system pi
     groupmod -n system pi
+fi
+
+if [ $PLATFORM = "pinephone" ]; then
+    usermod --login system mobian
+    groupmod -n system mobian
 fi
 
 usermod -m -d /system system
@@ -145,7 +160,9 @@ if [ $PLATFORM = "rpi" ]; then
     echo "Changing system behaviour..."
 
     cp /usr/share/raspi-config/10-blanking.conf /etc/X11/xorg.conf.d
+fi
 
+if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     echo "Adding Stage 2 script..."
 
     cp /host/stage2.sh /system/scripts/stage2.sh
@@ -164,7 +181,7 @@ EOF
 
 sed -i "/\.\/firstboot\.sh/d" /root/.bashrc
 
-if [ $PLATFORM = "rpi" ]; then
+if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     sed -i -e "s/root::/root:x:/g" /etc/passwd
 
     rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
