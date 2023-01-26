@@ -102,7 +102,7 @@ if [ $depInstall = true ]; then
     echo "Installing dependencies..."
 
     if [ $PLATFORM = "pinephone" ]; then
-    tee /etc/apt/sources.list.d/sid.list << EOF
+        tee /etc/apt/sources.list.d/sid.list << EOF
 deb http://http.us.debian.org/debian sid main non-free
 deb-src http://http.us.debian.org/debian sid main non-free
 EOF
