@@ -1,5 +1,5 @@
 {
-    "type": "desktop",
+    "type": "mobile",
     "model": {
         "codename": "pinephone",
         "fallbackLocale": "en_GB",
