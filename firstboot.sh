@@ -47,7 +47,14 @@ done
 if [ $PLATFORM = "rpi" ]; then
     echo "Expanding filesystem..."
 
-    parted -m /dev/mmcblk0 u s resizepart 2 8388608 # 4 GiB in 512-byte sectors
+    parted -m /dev/mmcblk0 u s resizepart 2 8388608 # 4 GiB (4 * 1024 * 1024 * 2)
+    resize2fs /dev/mmcblk0p2
+fi
+
+if [ $PLATFORM = "pinephone" ]; then
+    echo "Expanding filesystem..."
+
+    parted -m /dev/mmcblk0 u s resizepart 2 12582912 # 6 GiB (6 * 1024 * 1024 * 2)
     resize2fs /dev/mmcblk0p2
 fi
 
