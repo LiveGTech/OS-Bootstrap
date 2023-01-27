@@ -10,4 +10,4 @@
 xset s 0
 
 cd /system/bin
-./gshell.AppImage -- --real > /system/logs/gshell.log
+./gshell.AppImage --disable-gpu --real > /system/logs/gshell.log

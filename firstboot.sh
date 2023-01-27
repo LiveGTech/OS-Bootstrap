@@ -117,6 +117,8 @@ EOF
     apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
+    # zlib1g-dev mesa-utils
+
     if [ $PLATFORM = "pinephone" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
     fi
@@ -194,6 +196,8 @@ if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
     rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@tty1.service
 fi
+
+# TODO: Remove network config for PinePhone
 
 rm -rf /host
 
