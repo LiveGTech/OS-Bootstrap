@@ -114,10 +114,8 @@ EOF
     fi
 
     apt update
-    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
+    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr noto-fonts zlib1g-dev
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
-
-    # zlib1g-dev mesa-utils
 
     if [ $PLATFORM = "pinephone" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
