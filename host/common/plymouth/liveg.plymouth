@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=LiveG OS
+Description=Boot screen for LiveG OS.
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/liveg
+ScriptFile=/usr/share/plymouth/themes/liveg/liveg.script

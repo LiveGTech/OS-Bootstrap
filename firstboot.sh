@@ -114,7 +114,7 @@ EOF
     fi
 
     apt update
-    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr noto-fonts zlib1g-dev
+    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr noto-fonts zlib1g-dev plymouth plymouth-x11
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
     if [ $PLATFORM = "pinephone" ]; then
@@ -178,12 +178,18 @@ if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     touch /system/stage2
 fi
 
+echo "Adding boot animation..."
+
+mkdir -p /usr/share/plymouth/themes/liveg
+cp -a /host/common/plymouth/. /usr/share/plymouth/themes/liveg/
+cp /host/common/plymouthd.conf /etc/plymouth/plymouthd.conf
+
 echo "Cleaning up..."
 
 tee /etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
 [Service]
 ExecStart=
-ExecStart=-/sbin/agetty --autologin system --noclear %I 38400 linux
+ExecStart=-/sbin/agetty --skip-login --nonewline --noissue --autologin system --noclear %I 38400 linux
 EOF
 
 sed -i "/\.\/firstboot\.sh/d" /root/.bashrc

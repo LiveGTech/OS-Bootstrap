@@ -73,8 +73,9 @@ export QEMU_COMMAND="qemu-system-$ARCH"
 while test $# -gt 0; do
     case $1 in
         --env-only)
-            echo "Applied environment variables for execution of other scripts only"
-            return
+            echo "In shell that has environment variables for execution of other scripts only"
+            bash
+            exit
             ;;
 
         --no-emulation)

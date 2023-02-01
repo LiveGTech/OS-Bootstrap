@@ -62,6 +62,7 @@ echo "Mounting disk image to \`build/$PLATFORM/rootfs\`..."
 
 sudo mkdir -p build/$PLATFORM/rootfs/host
 sudo cp -a host/$PLATFORM/. build/$PLATFORM/rootfs/host/
+sudo cp -a host/common/. build/$PLATFORM/rootfs/host/common
 
 sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty@tty1.service.d
 
