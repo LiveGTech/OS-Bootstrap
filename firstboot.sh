@@ -149,6 +149,8 @@ sudo tee -a /system/.bashrc << EOF
 /system/scripts/startup.sh
 EOF
 
+touch /system/.hushlogin
+
 if [ $PLATFORM = "x86_64" ]; then
     echo "Adding installation helper files..."
 
