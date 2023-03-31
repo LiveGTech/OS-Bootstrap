@@ -14,7 +14,7 @@ mkdir -p cache/$PLATFORM
 
 case $PLATFORM in
     x86_64)
-        wget -nc https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.5.0-amd64-netinst.iso -O cache/$PLATFORM/base.iso
+        wget -nc https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.6.0-amd64-netinst.iso -O cache/$PLATFORM/base.iso
         ;;
 
     rpi)
@@ -27,7 +27,7 @@ case $PLATFORM in
         ;;
 
     arm64)
-        wget -nc https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-11.5.0-arm64-netinst.iso -O cache/$PLATFORM/base.iso
+        wget -nc https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-11.6.0-arm64-netinst.iso -O cache/$PLATFORM/base.iso
         ;;
 
     pinephone)

@@ -65,7 +65,7 @@ if [ $PLATFORM = "pinephone" ]; then
 
     echo "Setting system clock..."
 
-    sudo hwclock --hctosys
+    hwclock --hctosys
 fi
 
 echo "Editing hosts file..."
@@ -96,7 +96,7 @@ if [ $depInstall = true ]; then
 
     echo "Adding LiveG APT Repository to APT sources..."
 
-    curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
+    curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
     curl -s --compressed https://opensource.liveg.tech/liveg-apt/liveg-apt.list -o /etc/apt/sources.list.d/liveg-apt.list
 
     echo "Installing dependencies..."
@@ -114,7 +114,7 @@ EOF
     fi
 
     apt update
-    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr fonts-noto zlib1g-dev plymouth plymouth-x11
+    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
     if [ $PLATFORM = "pinephone" ]; then
@@ -145,11 +145,13 @@ chmod a+x /system/scripts/startup.sh
 cp /host/xload.sh /system/scripts/xload.sh
 chmod a+x /system/scripts/xload.sh
 
-sudo tee -a /system/.bashrc << EOF
+tee -a /system/.bashrc << EOF
 /system/scripts/startup.sh
 EOF
 
 touch /system/.hushlogin
+
+sed -i -e "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
 
 if [ $PLATFORM = "x86_64" ]; then
     echo "Adding installation helper files..."
