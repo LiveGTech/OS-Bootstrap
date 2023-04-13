@@ -188,6 +188,10 @@ mkdir -p /usr/share/plymouth/themes/liveg
 cp -a /host/common/plymouth/. /usr/share/plymouth/themes/liveg/
 cp /host/common/plymouthd.conf /etc/plymouth/plymouthd.conf
 
+if [ $PLATFORM = "rpi" ]; then
+    sed "1{s/$/ quiet splash logo.nologo loglevel=2 udev.log_level=2 vt.global_cursor_default=0/}" /boot/cmdline.txt
+fi
+
 echo "Cleaning up..."
 
 tee /etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
