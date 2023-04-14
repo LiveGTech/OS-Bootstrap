@@ -16,4 +16,4 @@ sudo host/$PLATFORM/p-boot/p-boot-conf host/$PLATFORM/p-boot /dev/loop0p1
 
 ./unmount.sh
 
-dd if=host/$PLATFORM/p-boot/p-boot.bin of=build/$PLATFORM/system.img bs=1024 seek=8 conv=notrunc
+dd if=host/$PLATFORM/p-boot/p-boot-serial.bin of=build/$PLATFORM/system.img bs=1024 seek=8 conv=notrunc
