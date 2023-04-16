@@ -1,5 +1,6 @@
 {
     "type": "desktop",
+    "platform": "x86_64",
     "model": {
         "codename": "im",
         "fallbackLocale": "en_GB",
