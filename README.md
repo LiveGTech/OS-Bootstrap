@@ -9,7 +9,7 @@ For more information on LiveG OS and its various components, visit [the LiveG OS
 Before bootstrapping LiveG OS, you'll need to run this command on a Debian host system to install the required tools:
 
 ```bash
-$ sudo apt-get install qemu netcat grub-common grub-pc-bin xorriso rsync
+sudo apt-get install qemu netcat grub-common grub-pc-bin xorriso rsync
 ```
 
 `sudo` commands will be run throughout the bootstrapping process. To ensure continuity, set the `NOPASSWD` option for `sudo` for your user/group by editing the file provided by running `sudo visudo`.
@@ -49,7 +49,7 @@ Before bootstrapping, ensure that a the copy of the gShell AppImage file you wis
 To bootstrap LiveG OS, run the following:
 
 ```bash
-$ ./bootstrap.sh
+./bootstrap.sh
 ```
 
 When complete, the distributable ISO file will be available at `build/system.iso`.
@@ -57,8 +57,8 @@ When complete, the distributable ISO file will be available at `build/system.iso
 You can also specify the platform type to target as an argument:
 
 ```bash
-$ ./bootstrap.sh x86_64 # Modern PCs with typical Intel or AMD chipset
-$ ./bootstrap.sh rpi # Raspberry Pi 3/4 computers and CM3/4 SoM chips
+./bootstrap.sh x86_64 # Modern PCs with typical Intel or AMD chipset
+./bootstrap.sh rpi # Raspberry Pi 3/4 computers and CM3/4 SoM chips
 ```
 
 ## Distributing
