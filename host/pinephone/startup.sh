@@ -22,5 +22,24 @@ fi
 
 while true; do
     clear
+
+    # Update staging
+    if [ -f /system/gshell-staging-ready ]; then
+        if [ -f /system/scripts/update-reboot.sh ]; then
+            /system/scripts/update-reboot.sh
+        fi
+
+        pushd /system/bin
+            if [ -f gshell-update.AppImage ]; then
+                # gShell files are moved this way to prevent a bad state in case of unscheduled system shutdown
+                mv gshell.AppImage gshell-old.AppImage
+                mv gshell-update.AppImage gshell.AppImage
+                rm gshell-old.AppImage
+            fi
+        popd
+
+        rm /system/gshell-staging-ready
+    fi
+
     startx /system/scripts/xload.sh -- -nocursor > /dev/null 2>&1
 done
