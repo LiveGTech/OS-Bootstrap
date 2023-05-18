@@ -7,6 +7,8 @@
 # https://liveg.tech/os
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
+# TODO: Experiment with hiding boot messages: https://raspberrypi.stackexchange.com/questions/59310/remove-boot-messages-all-text-in-jessie
+
 # Apply write permissions to `system` user
 sudo chown -R system:system /system
 sudo chmod -R a+w /system
@@ -22,5 +24,5 @@ fi
 
 while true; do
     clear
-    startx /system/scripts/xload.sh
+    startx /system/scripts/xload.sh > /dev/null 2>&1
 done

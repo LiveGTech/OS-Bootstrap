@@ -45,6 +45,23 @@ case $PLATFORM in
 
         ;;
 
+    arm64|pinephone)
+        export ARCH="aarch64"
+
+        export QEMU_ARGS="\
+            -machine virt \
+            -cpu cortex-a53 \
+            -smp 8 \
+            -bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd \
+            -netdev user,id=net0,hostfwd=tcp::8002-:8000 \
+            -device virtio-net-pci,netdev=net0 \
+            -device usb-ehci \
+            -device usb-kbd \
+            -monitor tcp:127.0.0.1:8001,server,nowait \
+        "
+
+        ;;
+
     *)
         echo "Invalid platform specified" >&2
         exit 1
@@ -56,8 +73,9 @@ export QEMU_COMMAND="qemu-system-$ARCH"
 while test $# -gt 0; do
     case $1 in
         --env-only)
-            echo "Applied environment variables for execution of other scripts only"
-            return
+            echo "In shell that has environment variables for execution of other scripts only"
+            bash
+            exit
             ;;
 
         --no-emulation)
@@ -77,11 +95,12 @@ done
 ./boot.sh
 
 case $PLATFORM in
-    rpi)
-        # Raspberry Pis don't need an ISO file; just use image file instead
+    rpi|pinephone)
+        # These devices don't need an ISO file; just use image file instead
         ;;
 
     *)
+        # Build an ISO file from the current image file
         ./makeiso.sh
         ;;
 esac

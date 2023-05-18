@@ -29,6 +29,11 @@ echo "Platform: $PLATFORM"
 
 depInstall=true
 
+if [ $PLATFORM = "arm64" ]; then
+    # Debian `arm64` doesn't have `dhcpcd` included, so we'll need to start up a DHCP server manually
+    dhclient
+fi
+
 while test $# -gt 0; do
     case $1 in
         --skip-dep-install)
@@ -42,8 +47,25 @@ done
 if [ $PLATFORM = "rpi" ]; then
     echo "Expanding filesystem..."
 
-    parted -m /dev/mmcblk0 u s resizepart 2 8388608 # 4 GiB in 512-byte sectors
+    parted -m /dev/mmcblk0 u s resizepart 2 8388608 # 4 GiB (4 * 1024 * 1024 * 2)
     resize2fs /dev/mmcblk0p2
+fi
+
+if [ $PLATFORM = "pinephone" ]; then
+    echo "Expanding filesystem..."
+
+    parted -m /dev/mmcblk0 u s resizepart 2 12582912 # 6 GiB (6 * 1024 * 1024 * 2)
+    resize2fs /dev/mmcblk0p2
+fi
+
+if [ $PLATFORM = "pinephone" ]; then
+    echo "Launching network configuration interface (requires user input)..."
+
+    nmtui # This is because there's no easy way to get Ethernet, so we must connect to Wi-Fi instead
+
+    echo "Setting system clock..."
+
+    hwclock --hctosys
 fi
 
 echo "Editing hosts file..."
@@ -55,6 +77,11 @@ echo "Making changes to system directory structure..."
 if [ $PLATFORM = "rpi" ]; then
     usermod --login system pi
     groupmod -n system pi
+fi
+
+if [ $PLATFORM = "pinephone" ]; then
+    usermod --login system mobian
+    groupmod -n system mobian
 fi
 
 usermod -m -d /system system
@@ -69,14 +96,30 @@ if [ $depInstall = true ]; then
 
     echo "Adding LiveG APT Repository to APT sources..."
 
-    curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
+    curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
     curl -s --compressed https://opensource.liveg.tech/liveg-apt/liveg-apt.list -o /etc/apt/sources.list.d/liveg-apt.list
 
     echo "Installing dependencies..."
 
+    if [ $PLATFORM = "pinephone" ]; then
+        tee /etc/apt/sources.list.d/sid.list << EOF
+deb http://http.us.debian.org/debian sid main non-free
+deb-src http://http.us.debian.org/debian sid main non-free
+EOF
+
+        tee /etc/apt/sources.list.d/buster.list << EOF
+deb http://http.us.debian.org/debian bullseye non-free
+deb-src http://http.us.debian.org/debian bullseye non-free
+EOF
+    fi
+
     apt update
-    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr
+    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+
+    if [ $PLATFORM = "pinephone" ]; then
+        DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
+    fi
 else
     echo "Skipped installation of dependencies"
 fi
@@ -102,9 +145,13 @@ chmod a+x /system/scripts/startup.sh
 cp /host/xload.sh /system/scripts/xload.sh
 chmod a+x /system/scripts/xload.sh
 
-sudo tee -a /system/.bashrc << EOF
+tee -a /system/.bashrc << EOF
 /system/scripts/startup.sh
 EOF
+
+touch /system/.hushlogin
+
+sed -i -e "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
 
 if [ $PLATFORM = "x86_64" ]; then
     echo "Adding installation helper files..."
@@ -124,7 +171,9 @@ if [ $PLATFORM = "rpi" ]; then
     echo "Changing system behaviour..."
 
     cp /usr/share/raspi-config/10-blanking.conf /etc/X11/xorg.conf.d
+fi
 
+if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     echo "Adding Stage 2 script..."
 
     cp /host/stage2.sh /system/scripts/stage2.sh
@@ -133,22 +182,35 @@ if [ $PLATFORM = "rpi" ]; then
     touch /system/stage2
 fi
 
+echo "Adding boot animation..."
+
+mkdir -p /usr/share/plymouth/themes/liveg
+cp -a /host/common/plymouth/. /usr/share/plymouth/themes/liveg/
+cp /host/common/plymouthd.conf /etc/plymouth/plymouthd.conf
+
+if [ $PLATFORM = "rpi" ]; then
+    sed -i -e "s/console=tty1 //g" /boot/cmdline.txt
+    sed "1{s/$/ quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
+fi
+
 echo "Cleaning up..."
 
 tee /etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
 [Service]
 ExecStart=
-ExecStart=-/sbin/agetty --autologin system --noclear %I 38400 linux
+ExecStart=-/sbin/agetty --skip-login --nonewline --noissue --autologin system --noclear %I 38400 linux
 EOF
 
 sed -i "/\.\/firstboot\.sh/d" /root/.bashrc
 
-if [ $PLATFORM = "rpi" ]; then
+if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     sed -i -e "s/root::/root:x:/g" /etc/passwd
 
     rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
     rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@tty1.service
 fi
+
+# TODO: Remove network config for PinePhone
 
 rm -rf /host
 

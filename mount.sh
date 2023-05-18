@@ -15,8 +15,13 @@ case $PLATFORM in
         sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;
 
-    rpi)
+    rpi|pinephone)
         sudo losetup -P /dev/loop0 build/$PLATFORM/system.img
         sudo mount /dev/loop0p2 build/$PLATFORM/rootfs
+        ;;
+
+    arm64)
+        mkdir -p build/$PLATFORM/rootfs
+        sudo mount -o loop,offset=511705088 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;
 esac

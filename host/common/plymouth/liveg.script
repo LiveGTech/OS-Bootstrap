@@ -1,0 +1,37 @@
+# LiveG OS Bootstrap Toolchain
+# 
+# Copyright (C) LiveG. All Rights Reserved.
+# 
+# https://liveg.tech/os
+# Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
+
+LOGO_FADE_IN_DURATION = 1;
+
+logoSize = Math.Min(Math.Int(Window.GetWidth() / 2), 128);
+
+logoImage = Image("logo.png").Scale(logoSize, logoSize);
+logoSprite = Sprite(logoImage);
+
+timeTicks = 0;
+timeSeconds = 0;
+
+logoSprite.SetPosition(
+    Window.GetX() + (Window.GetWidth() / 2) - (logoImage.GetWidth() / 2),
+    Window.GetY() + (Window.GetHeight() / 2) - (logoImage.GetHeight() / 2),
+    0
+);
+
+logoSprite.SetOpacity(0);
+
+fun refresh() {
+    # Refreshing is performed at up to 50 FPS
+    timeSeconds = timeTicks / 50;
+
+    if (Plymouth.GetMode() == "boot" || Plymouth.GetMode() == "resume") {
+        logoSprite.SetOpacity(Math.Min(timeSeconds / LOGO_FADE_IN_DURATION, 1));
+    }
+
+    timeTicks++;
+}
+
+Plymouth.SetRefreshFunction(refresh);

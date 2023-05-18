@@ -18,5 +18,5 @@ fi
 
 while true; do
     clear
-    startx /system/scripts/xload.sh
+    startx /system/scripts/xload.sh > /dev/null 2>&1
 done

@@ -32,6 +32,14 @@ function typein {
                 monitorexec "sendkey shift-semicolon"
                 ;;
 
+            "-")
+                monitorexec "sendkey minus"
+                ;;
+
+            "_")
+                monitorexec "sendkey shift-minus"
+                ;;
+
             "/")
                 monitorexec "sendkey slash"
                 ;;
@@ -47,9 +55,37 @@ function typein {
     done
 }
 
-sleep 4
-monitorexec "sendkey esc"
+if [ $PLATFORM = "arm64" ]; then
+    sleep 7
+    monitorexec "sendkey c"
+    sleep 1
+
+    typein "linux /install.a64/vmlinuz \
+auto-install/enable=true \
+netcfg/get_hostname=debian \
+netcfg/get_domain=debian "
+
+    sleep 1
+
+    typein "\
+preseed/url=http://10.0.2.2:8000/preseed.cfg \
+cdrom-detect/load_media=false \
+cdrom-detect/manual_config=true \
+--- quiet"
+
 sleep 1
-typein "auto url=http://10.0.2.2:8000/preseed.cfg"
-sleep 1
-monitorexec "sendkey ret"
+
+    monitorexec "sendkey ret"
+    typein "initrd /install.a64/initrd.gz"
+    monitorexec "sendkey ret"
+    typein "boot"
+    sleep 1
+    monitorexec "sendkey ret"
+else
+    sleep 4
+    monitorexec "sendkey esc"
+    sleep 1
+    typein "auto url=http://10.0.2.2:8000/preseed.cfg"
+    sleep 1
+    monitorexec "sendkey ret"
+fi
