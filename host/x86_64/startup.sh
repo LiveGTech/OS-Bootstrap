@@ -19,8 +19,13 @@ fi
 while true; do
     clear
 
+    # Update rollback
+    if [ -f /system/gshell-staging-rollback ] && [ -f /system/scripts/update-rollback.sh ]; then
+        /system/scripts/update-rollback.sh
+    fi
+
     # Update staging
-    if [ -f /system/gshell-staging-ready ]; then
+    if [ -f /system/gshell-staging-ready ] && [ ! -f /system/gshell-staging-rollback ]; then
         if [ -f /system/scripts/update-reboot.sh ]; then
             /system/scripts/update-reboot.sh
         fi
@@ -36,6 +41,9 @@ while true; do
 
         rm /system/gshell-staging-ready
     fi
+
+    # Remove rollback flag file
+    rm -f /system/gshell-staging-rollback
 
     startx /system/scripts/xload.sh > /dev/null 2>&1
 done
