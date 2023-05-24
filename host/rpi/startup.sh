@@ -27,6 +27,8 @@ while true; do
 
     # Update rollback
     if [ -f /system/gshell-staging-rollback ] && [ -f /system/scripts/update-rollback.sh ]; then
+        touch /system/storage/update-rolled-back
+
         /system/scripts/update-rollback.sh
     fi
 
