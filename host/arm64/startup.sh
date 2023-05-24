@@ -40,6 +40,7 @@ while true; do
         popd
 
         rm /system/gshell-staging-ready
+        rm -rf /system/storage/update
     fi
 
     # Remove rollback flag file
