@@ -58,7 +58,9 @@ You can also specify the platform type to target as an argument:
 
 ```bash
 ./bootstrap.sh x86_64 # Modern PCs with typical Intel or AMD chipset
+./bootstrap.sh arm64 # Modern PCs with typical ARM64 chipset
 ./bootstrap.sh rpi # Raspberry Pi 3/4 computers and CM3/4 SoM chips
+./bootstrap.sh pinephone # PINE64 PinePhone smartphone
 ```
 
 ## Distributing
