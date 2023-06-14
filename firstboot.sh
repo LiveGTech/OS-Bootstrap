@@ -114,7 +114,7 @@ EOF
     fi
 
     apt update
-    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
+    apt install -y xorg wget chromium fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
     if [ $PLATFORM = "pinephone" ]; then

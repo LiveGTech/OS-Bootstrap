@@ -9,5 +9,11 @@
 
 xset s 0
 
+sudo dmidecode | grep -i "Product Name: VirtualBox"
+
+if [ $? = 0 ]; then
+    xrandr --output Virtual1 --mode 1280x720
+fi
+
 cd /system/bin
 ./gshell.AppImage --appimage-extract-and-run -- --real > /system/logs/gshell.log

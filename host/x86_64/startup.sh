@@ -23,12 +23,14 @@ while true; do
     if [ -f /system/gshell-staging-rollback ] && [ -f /system/scripts/update-rollback.sh ]; then
         touch /system/storage/update-rolled-back
 
+        chmod +x /system/scripts/update-rollback.sh
         /system/scripts/update-rollback.sh
     fi
 
     # Update staging
     if [ -f /system/gshell-staging-ready ] && [ ! -f /system/gshell-staging-rollback ]; then
         if [ -f /system/scripts/update-reboot.sh ]; then
+            chmod +x /system/scripts/update-reboot.sh
             /system/scripts/update-reboot.sh
         fi
 

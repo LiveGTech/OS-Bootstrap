@@ -32,7 +32,7 @@ sudo umount build/$PLATFORM/rootfs
 # succeeded (if we automate, then next part should be skipped so script exits
 # when everything is complete).
 
-qemu-img create cache/$PLATFORM/test.img 4G
+qemu-img create cache/$PLATFORM/test.img 5G
 
 bash -c "$QEMU_COMMAND \
     -m 2G \

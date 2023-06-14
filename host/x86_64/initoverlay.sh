@@ -15,7 +15,7 @@ mount -t tmpfs tmp /mnt
 mkdir /mnt/lower
 mkdir /mnt/overlay
 
-mount -t tmpfs rw /mnt/overlay
+mount -t tmpfs -o size=1G rw /mnt/overlay
 
 mkdir /mnt/overlay/upper
 mkdir /mnt/overlay/work
