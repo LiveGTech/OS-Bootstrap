@@ -193,6 +193,8 @@ if [ $PLATFORM = "rpi" ]; then
     sed "1{s/$/ quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
 fi
 
+update-initramfs -u
+
 echo "Cleaning up..."
 
 tee /etc/systemd/system/getty@tty1.service.d/autologin.conf << EOF
