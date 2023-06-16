@@ -8,8 +8,12 @@
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
 export PLATFORM="x86_64"
+export GSHELL_VERSION="0.2.0"
+export GSHELL_PROVIDED_DIST=""
 export QEMU_ARGS=""
 export EMULATING=true
+
+envOnly=false
 
 if [[ $1 != "" ]]; then
     export PLATFORM=$1
@@ -73,9 +77,7 @@ export QEMU_COMMAND="qemu-system-$ARCH"
 while test $# -gt 0; do
     case $1 in
         --env-only)
-            echo "In shell that has environment variables for execution of other scripts only"
-            bash
-            exit
+            envOnly=true
             ;;
 
         --no-emulation)
@@ -85,12 +87,32 @@ while test $# -gt 0; do
             echo "Emulation has been disabled; images must be manually run"
 
             ;;
+
+        --gshell-dist)
+            shift
+            export GSHELL_PROVIDED_DIST=$1
+            ;;
     esac
 
     shift
 done
 
+if [ $envOnly = true ]; then
+    echo "In shell that has environment variables for execution of other scripts only"
+
+    bash --rcfile <(
+        cat ~/.bashrc
+        echo "_PS1=\$PS1"
+        echo "PS1=\"($PLATFORM) \$_PS1\""
+    )
+
+    exit
+fi
+
+sudo true # Ensure recent password entry in case `NOPASSWD` has not been set
+
 ./server.sh
+./buildgshell.sh
 ./getbase.sh
 ./boot.sh
 
