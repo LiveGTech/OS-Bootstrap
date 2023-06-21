@@ -126,7 +126,7 @@ VERSION="$GSHELL_VERSION"
 ID="livegos"
 ID_LIKE="debian"
 PRETTY_NAME="LiveG OS $GSHELL_VERSION"
-VERSION_ID="0"
+VERSION_ID="$GSHELL_VERNUM"
 HOME_URL="https://liveg.tech/os"
 SUPPORT_URL="https://docs.liveg.tech/?product=os"
 EOF

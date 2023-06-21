@@ -9,6 +9,7 @@
 
 export PLATFORM="x86_64"
 export GSHELL_VERSION="0.2.0"
+export GSHELL_VERNUM=1
 export GSHELL_PROVIDED_DIST=""
 export QEMU_ARGS=""
 export EMULATING=true
