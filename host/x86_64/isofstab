@@ -6,5 +6,6 @@
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
 LABEL=LiveG-OS-IM   /               tmpfs       noatime,suid,errors=remount-ro  0   1
-/dev/sr0            /media/cdrom0   udf,iso9660 user,noauto                     0   0
+/dev/sr0            /media/cdrom0   udf,iso9660 user,noauto,errors=continue     0   0
+/dev/sda            /media/liveusb  udf,iso9660 user,noauto,errors=continue     0   0
 tmpfs               /tmp            tmpfs       rw,mode=1777                    0   0

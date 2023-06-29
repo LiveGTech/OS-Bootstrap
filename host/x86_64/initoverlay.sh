@@ -21,7 +21,7 @@ mkdir /mnt/overlay/upper
 mkdir /mnt/overlay/work
 mkdir /mnt/root
 
-mount -t iso9660 -o defaults,ro /dev/sr0 /mnt/lower
+mount -t iso9660 -o defaults,ro -L LiveG-OS-IM /mnt/lower
 mount -t overlay -o lowerdir=/mnt/lower,upperdir=/mnt/overlay/upper,workdir=/mnt/overlay/work overlay /mnt/root
 
 mkdir /mnt/root/ro
