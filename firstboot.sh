@@ -190,7 +190,7 @@ cp /host/common/plymouthd.conf /etc/plymouth/plymouthd.conf
 
 if [ $PLATFORM = "rpi" ]; then
     sed -i -e "s/console=tty1 //g" /boot/cmdline.txt
-    sed "1{s/$/ quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
+    sed -i "1{s/$/ quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
 fi
 
 update-initramfs -u
