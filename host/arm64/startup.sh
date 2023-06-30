@@ -16,6 +16,9 @@ if xset q &> /dev/null; then
     exit
 fi
 
+# Start X11 as root with no root window to fix misconfiguration issues with Nvidia drivers
+sudo startx : > /dev/null 2>&1
+
 while true; do
     clear
 

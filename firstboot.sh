@@ -119,12 +119,6 @@ EOF
 
     if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y nvidia-driver firmware-misc-nonfree
-
-        tee /etc/modprobe.d/deny-nouveau.conf << EOF
-blacklist nouveau
-blacklist nv
-options nouveau modeset=0
-EOF
     fi
 
     if [ $PLATFORM = "pinephone" ]; then
