@@ -77,6 +77,8 @@ echo "Making changes to system directory structure..."
 if [ $PLATFORM = "rpi" ]; then
     usermod --login system pi
     groupmod -n system pi
+
+    # TODO: Ensure that network time is synced before performing APT package installations
 fi
 
 if [ $PLATFORM = "pinephone" ]; then
@@ -101,21 +103,21 @@ if [ $depInstall = true ]; then
 
     echo "Installing dependencies..."
 
-    if [ $PLATFORM = "pinephone" ]; then
-        tee /etc/apt/sources.list.d/sid.list << EOF
-deb http://http.us.debian.org/debian sid main non-free
-deb-src http://http.us.debian.org/debian sid main non-free
-EOF
+    tee /etc/apt/sources.list.d/bookworm.list << EOF
+deb http://deb.debian.org/debian bookworm non-free non-free-firmware
+deb-src http://deb.debian.org/debian bookworm non-free non-free-firmware
 
-        tee /etc/apt/sources.list.d/buster.list << EOF
-deb http://http.us.debian.org/debian bullseye non-free
-deb-src http://http.us.debian.org/debian bullseye non-free
+deb http://security.debian.org bookworm-security non-free non-free-firmware
+deb-src http://security.debian.org bookworm-security non-free non-free-firmware
 EOF
-    fi
 
     apt update
-    apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" xorg wget chromium fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
+    DEBIAN_FRONTEND=noninteractive apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" xorg wget chromium fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+
+    if [ $PLATFORM = "x86_64" ]; then
+        DEBIAN_FRONTEND=noninteractive apt install -y nvidia-driver firmware-misc-nonfree
+    fi
 
     if [ $PLATFORM = "pinephone" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
