@@ -122,6 +122,7 @@ EOF
 
         tee /etc/modprobe.d/deny-nouveau.conf << EOF
 blacklist nouveau
+blacklist nv
 options nouveau modeset=0
 EOF
     fi
