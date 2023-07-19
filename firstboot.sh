@@ -78,7 +78,11 @@ if [ $PLATFORM = "rpi" ]; then
     usermod --login system pi
     groupmod -n system pi
 
-    # TODO: Ensure that network time is synced before performing APT package installations
+    echo "Syncing system clock..."
+
+    systemctl stop ntp
+    ntpd -gq
+    systemctl start ntp
 fi
 
 if [ $PLATFORM = "pinephone" ]; then
