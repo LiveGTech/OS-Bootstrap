@@ -23,6 +23,7 @@ fi
 case $PLATFORM in
     x86_64)
         export ARCH="x86_64"
+        export GRUB_LOCATION="usr/lib/grub/i386-pc"
 
         export QEMU_ARGS="\
             -enable-kvm \
@@ -52,6 +53,7 @@ case $PLATFORM in
 
     arm64|pinephone)
         export ARCH="aarch64"
+        export GRUB_LOCATION="usr/lib/grub/arm64-efi"
 
         export QEMU_ARGS="\
             -machine virt \
