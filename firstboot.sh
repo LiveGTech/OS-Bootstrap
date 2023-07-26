@@ -27,6 +27,13 @@ echo ""
 echo "The LiveG OS bootstrapping firstboot script is running"
 echo "Platform: $PLATFORM"
 
+if [ -f /tmp/firstboot-running ]; then
+    echo "Firstboot script is already running!"
+    exit
+fi
+
+touch /tmp/firstboot-running
+
 depInstall=true
 
 if [ $PLATFORM = "arm64" ]; then
@@ -161,7 +168,7 @@ touch /system/.hushlogin
 
 sed -i -e "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
 
-if [ $PLATFORM = "x86_64" ]; then
+if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ]; then
     echo "Adding installation helper files..."
 
     mkdir -p /system/install
@@ -216,8 +223,8 @@ sed -i "/\.\/firstboot\.sh/d" /root/.bashrc
 if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     sed -i -e "s/root::/root:x:/g" /etc/passwd
 
-    rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
-    rm /etc/systemd/system/getty.target.wants/serial-getty-firstboot@tty1.service
+    rm -f /etc/systemd/system/getty.target.wants/serial-getty-firstboot@ttyAMA0.service
+    rm -f /etc/systemd/system/getty.target.wants/serial-getty-firstboot@tty1.service
 fi
 
 rm /etc/NetworkManager/system-connections/*

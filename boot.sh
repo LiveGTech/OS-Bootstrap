@@ -36,7 +36,7 @@ elif [ $PLATFORM != "rpi" ]; then
             $QEMU_ARGS"
     else
         bash -c "$QEMU_COMMAND \
-            -m 1G \
+            -m 2G \
             -cdrom cache/$PLATFORM/base.iso \
             -hda build/$PLATFORM/system.img \
             -monitor tcp:127.0.0.1:8001,server,nowait \
@@ -168,7 +168,7 @@ if [ $PLATFORM = "pinephone" ]; then
 fi
 
 bash -c "$QEMU_COMMAND \
-    -m 1G \
+    -m 2G \
     -hda build/$PLATFORM/system.img \
     $QEMU_ARGS"
 

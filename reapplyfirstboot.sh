@@ -26,6 +26,6 @@ EOF
 ./unmount.sh
 
 bash -c "$QEMU_COMMAND \
-    -m 1G \
+    -m 2G \
     -hda build/$PLATFORM/system.img \
     $QEMU_ARGS"
