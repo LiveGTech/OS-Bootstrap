@@ -20,7 +20,7 @@ elif [ -e cache/$PLATFORM/baseinstall.img ]; then
 elif [ $PLATFORM != "rpi" ]; then
     echo "Creating new base installed image (this might take about 30 minutes or longer)..."
 
-    qemu-img create build/$PLATFORM/system.img 5G
+    qemu-img create build/$PLATFORM/system.img 6G
 
     ./bootkeys.sh &
 

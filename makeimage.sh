@@ -8,7 +8,7 @@
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
 if ! [ -e build/$PLATFORM/system.img ]; then
-    qemu-img create build/$PLATFORM/system.img 5G
+    qemu-img create build/$PLATFORM/system.img 6G
 
     echo "Formatting image..."
 

@@ -31,7 +31,7 @@ sudo grub-mkrescue -o build/$PLATFORM/system.iso build/$PLATFORM/rootfs --direct
 # succeeded (if we automate, then next part should be skipped so script exits
 # when everything is complete).
 
-qemu-img create cache/$PLATFORM/test.img 5G
+qemu-img create cache/$PLATFORM/test.img 6G
 
 bash -c "$QEMU_COMMAND \
     -m 2G \
