@@ -112,6 +112,12 @@ if [ $depInstall = true ]; then
     curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
     curl -s --compressed https://opensource.liveg.tech/liveg-apt/liveg-apt.list -o /etc/apt/sources.list.d/liveg-apt.list
 
+    tee /etc/apt/sources.list.d/liveg-pinning << EOF
+Package: *
+Pin: origin opensource.liveg.tech
+Pin-Priority: 1000
+EOF
+
     echo "Installing dependencies..."
 
     if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ] || [ $PLATFORM = "pinephone" ]; then
