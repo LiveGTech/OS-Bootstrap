@@ -214,6 +214,12 @@ if [ $PLATFORM = "rpi" ]; then
     sed -i "1{s/$/ quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
 fi
 
+echo "Modifying theme for graphical Linux app integration..."
+
+echo "gtk-decoration-layout=:menu" >> /system/.config/gtk-3.0/settings.ini
+
+# TODO: Add in whole Adapt UI Linux theme and configure GTK 3 settings accordingly
+
 update-initramfs -u
 
 echo "Cleaning up..."
