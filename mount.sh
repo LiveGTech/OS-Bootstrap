@@ -16,6 +16,7 @@ case $PLATFORM in
         ;;
 
     rpi|pinephone)
+        mkdir -p build/$PLATFORM/rootfs
         sudo losetup -P /dev/loop0 build/$PLATFORM/system.img
         sudo mount /dev/loop0p2 build/$PLATFORM/rootfs
         ;;

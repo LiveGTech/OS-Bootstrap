@@ -54,14 +54,14 @@ done
 if [ $PLATFORM = "rpi" ]; then
     echo "Expanding filesystem..."
 
-    parted -m /dev/mmcblk0 u s resizepart 2 8388608 # 4 GiB (4 * 1024 * 1024 * 2)
+    echo Yes | parted -m /dev/mmcblk0 ---pretend-input-tty u s resizepart 2 6GiB
     resize2fs /dev/mmcblk0p2
 fi
 
 if [ $PLATFORM = "pinephone" ]; then
     echo "Expanding filesystem..."
 
-    parted -m /dev/mmcblk0 u s resizepart 2 12582912 # 6 GiB (6 * 1024 * 1024 * 2)
+    parted -m /dev/mmcblk0 u s resizepart 2 6GiB
     resize2fs /dev/mmcblk0p2
 fi
 
@@ -87,9 +87,7 @@ if [ $PLATFORM = "rpi" ]; then
 
     echo "Syncing system clock..."
 
-    systemctl stop ntp
-    ntpd -gq
-    systemctl start ntp
+    timedatectl set-ntp true
 fi
 
 if [ $PLATFORM = "pinephone" ]; then
@@ -112,7 +110,7 @@ if [ $depInstall = true ]; then
     curl -s --compressed https://opensource.liveg.tech/liveg-apt/KEY.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/liveg-apt.gpg > /dev/null
     curl -s --compressed https://opensource.liveg.tech/liveg-apt/liveg-apt.list -o /etc/apt/sources.list.d/liveg-apt.list
 
-    tee /etc/apt/sources.list.d/liveg-pinning << EOF
+    tee /etc/apt/preferences.d/100-liveg-pinning << EOF
 Package: *
 Pin: origin opensource.liveg.tech
 Pin-Priority: 1000
@@ -136,6 +134,10 @@ EOF
 
     if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y nvidia-driver firmware-misc-nonfree
+    fi
+
+    if [ $PLATFORM = "rpi" ]; then
+        DEBIAN_FRONTEND=noninteractive apt install -y gldriver-test
     fi
 
     if [ $PLATFORM = "pinephone" ]; then
@@ -211,7 +213,7 @@ cp /host/common/plymouthd.conf /etc/plymouth/plymouthd.conf
 
 if [ $PLATFORM = "rpi" ]; then
     sed -i -e "s/console=tty1 //g" /boot/cmdline.txt
-    sed -i "1{s/$/ quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
+    sed -i "1{s/$/quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
 fi
 
 echo "Modifying theme for graphical Linux app integration..."

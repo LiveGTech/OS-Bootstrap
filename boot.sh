@@ -134,6 +134,7 @@ EOF
 sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFORM/rootfs/etc/sudoers
 
 if [ $PLATFORM = "rpi" ]; then
+    mkdir -p build/$PLATFORM/bootfs
     sudo umount build/$PLATFORM/bootfs || /bin/true
     sudo mount /dev/loop0p1 build/$PLATFORM/bootfs
 
@@ -145,6 +146,8 @@ pi:\$6\$c70VpvPsVNCG0YR5\$l5vWWLsLko9Kj65gcQ8qvMkuOoRkEagI90qi3F/Y7rm8eNYZHW8CY6
 EOF
 
     sudo sed -i "s|quiet init=/usr/lib/raspberrypi-sys-mods/firstboot||" build/$PLATFORM/bootfs/cmdline.txt
+
+    sync
 
     sudo umount build/$PLATFORM/bootfs
 fi
