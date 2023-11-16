@@ -88,6 +88,10 @@ if [ $PLATFORM = "rpi" ]; then
     echo "Syncing system clock..."
 
     timedatectl set-ntp true
+
+    echo "Waiting for clock to sync... (5 seconds)"
+
+    sleep 5
 fi
 
 if [ $PLATFORM = "pinephone" ]; then
@@ -212,8 +216,8 @@ cp -a /host/common/plymouth/. /usr/share/plymouth/themes/liveg/
 cp /host/common/plymouthd.conf /etc/plymouth/plymouthd.conf
 
 if [ $PLATFORM = "rpi" ]; then
-    sed -i -e "s/console=tty1 //g" /boot/cmdline.txt
-    sed -i "1{s/$/quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0/}" /boot/cmdline.txt
+    sed -i -e "s/console=tty1 //g" /boot/firmware/cmdline.txt
+    sed -i "1{s/$/quiet splash logo.nologo loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 plymouth.ignore-serial-consoles/}" /boot/firmware/cmdline.txt
 fi
 
 echo "Modifying theme for graphical Linux app integration..."

@@ -20,8 +20,10 @@ resizeFilesystem() {
 
     echo "Resizing filesystem..."
 
-    if ! sudo parted -m /dev/mmcblk0 u s resizepart 2 $targetEnd; then
-        echo "Failed to resize filesystem"
+    if ! echo Yes | sudo parted -m /dev/mmcblk0 ---pretend-input-tty u s resizepart 2 $targetEnd; then
+        echo "LiveG OS Stage 2: Failed to resize filesystem"
+
+        exit 1
     fi
 
     sudo resize2fs /dev/mmcblk0p2 > /dev/null 2>&1
