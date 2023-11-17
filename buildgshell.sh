@@ -24,7 +24,7 @@ else
     mkdir -p build/gshell
 
     pushd build/gshell
-        git clone https://github.com/LiveGTech/gShell.git
+        git clone https://github.com/LiveGTech/gShell.git --recurse-submodules
     popd
 
     pushd build/gshell/gShell
