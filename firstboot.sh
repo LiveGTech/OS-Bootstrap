@@ -141,7 +141,7 @@ EOF
     fi
 
     if [ $PLATFORM = "rpi" ]; then
-        DEBIAN_FRONTEND=noninteractive apt install -y gldriver-test
+        DEBIAN_FRONTEND=noninteractive apt install -y gldriver-test raspberrypi-kernel
     fi
 
     if [ $PLATFORM = "pinephone" ]; then

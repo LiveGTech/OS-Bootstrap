@@ -16,4 +16,4 @@ if [ $? = 0 ]; then
 fi
 
 cd /system/bin
-./gshell.AppImage -- --real > /system/logs/gshell.log
+./gshell.AppImage --appimage-extract-and-run -- --real > /system/logs/gshell.log
