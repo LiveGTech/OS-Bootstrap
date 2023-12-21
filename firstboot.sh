@@ -198,6 +198,10 @@ if [ $PLATFORM = "rpi" ]; then
     echo "Changing system behaviour..."
 
     cp /usr/share/raspi-config/10-blanking.conf /etc/X11/xorg.conf.d
+
+    tee -a /boot/firmware/config.txt << EOF
+framebuffer_depth=32
+EOF
 fi
 
 if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
