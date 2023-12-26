@@ -141,7 +141,7 @@ EOF
     fi
 
     if [ $PLATFORM = "x86_64" ]; then
-        DEBIAN_FRONTEND=noninteractive apt install -y grub-efi-amd64
+        DEBIAN_FRONTEND=noninteractive apt install -y grub-efi-amd64 firmware-iwlwifi
     fi
 
     if [ $PLATFORM = "rpi" ]; then
