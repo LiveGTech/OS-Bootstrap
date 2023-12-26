@@ -35,7 +35,7 @@ exec chroot . sh -c "$(cat << EOF
 mount --move /mnt/mnt/lower/ /ro
 mount --move /mnt/mnt/overlay /rw
 
-chmod -R 777 /system
+chmod -R +w /system
 chmod u+s /usr/bin/sudo
 
 exec /sbin/init

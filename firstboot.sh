@@ -133,11 +133,15 @@ EOF
     fi
 
     apt update
-    DEBIAN_FRONTEND=noninteractive apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" xorg wget chromium fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11
+    DEBIAN_FRONTEND=noninteractive apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" xorg wget chromium fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11 fonts-urw-base35
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
     if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ]; then
-        DEBIAN_FRONTEND=noninteractive apt install -y nvidia-driver firmware-misc-nonfree
+        DEBIAN_FRONTEND=noninteractive apt install -y dosfstools nvidia-driver firmware-misc-nonfree
+    fi
+
+    if [ $PLATFORM = "x86_64" ]; then
+        DEBIAN_FRONTEND=noninteractive apt install -y grub-efi-amd64
     fi
 
     if [ $PLATFORM = "rpi" ]; then
@@ -161,6 +165,11 @@ mkdir -p /system/storage
 mkdir -p /system/logs
 
 cp /host/device.gsc /system/storage/device.gsc
+
+echo "Adding Adapt UI Linux theme..."
+
+mkdir -p /usr/share/themes/Adapt-UI-Linux
+cp -r /host/cache/Adapt-UI-Linux/* /usr/share/themes/Adapt-UI-Linux
 
 echo "Adding startup scripts..."
 
@@ -226,9 +235,26 @@ fi
 
 echo "Modifying theme for graphical Linux app integration..."
 
-echo "gtk-decoration-layout=:menu" >> /system/.config/gtk-3.0/settings.ini
+mkdir -p /usr/share/gtk-3.0
 
-# TODO: Add in whole Adapt UI Linux theme and configure GTK 3 settings accordingly
+tee /usr/share/gtk-3.0/settings.ini << EOF
+[Settings]
+gtk-theme-name=Adapt-UI-Linux
+gtk-icon-theme-name=Adapt-UI-Linux
+gtk-font-name=URW Gothic 10
+gtk-cursor-theme-size=18
+gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
+gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
+gtk-button-images=1
+gtk-menu-images=1
+gtk-enable-event-sounds=1
+gtk-enable-input-feedback-sounds=1
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle=hintslight
+gtk-xft-rgba=rgb
+gtk-decoration-layout=:menu
+EOF
 
 update-initramfs -u
 
