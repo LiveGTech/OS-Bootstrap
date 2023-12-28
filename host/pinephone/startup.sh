@@ -9,7 +9,7 @@
 
 # Apply write permissions to `system` user
 sudo chown -R system:system /system
-sudo chmod -R a+w /system
+sudo chmod -R +w /system
 
 if xset q &> /dev/null; then
     # X11 already running, so we might be running from a virtual terminal or something else
