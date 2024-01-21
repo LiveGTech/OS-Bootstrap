@@ -47,7 +47,7 @@ while true; do
             fi
         popd
 
-        rm /system/gshell-staging-ready
+        rm -f /system/gshell-staging-ready
         rm -rf /system/storage/update
     fi
 
