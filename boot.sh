@@ -133,6 +133,12 @@ EOF
 
 sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFORM/rootfs/etc/sudoers
 
+if [ $PLATFORM = "x86_64" ]; then
+    sudo tee -a build/$PLATFORM/rootfs/etc/systemd/logind.conf << EOF
+HandlePowerKey=ignore
+EOF
+fi
+
 if [ $PLATFORM = "rpi" ]; then
     mkdir -p build/$PLATFORM/bootfs
     sudo umount build/$PLATFORM/bootfs || /bin/true
