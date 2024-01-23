@@ -42,7 +42,7 @@ while true; do
                 # gShell files are moved this way to prevent a bad state in case of unscheduled system shutdown
                 mv gshell.AppImage gshell-old.AppImage
                 mv gshell-update.AppImage gshell.AppImage
-                rm gshell-old.AppImage
+                rm -f gshell-old.AppImage
             fi
         popd
 
