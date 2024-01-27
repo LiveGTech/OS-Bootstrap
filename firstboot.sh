@@ -222,6 +222,12 @@ if [ $PLATFORM = "rpi" ] || [ $PLATFORM = "pinephone" ]; then
     touch /system/stage2
 fi
 
+echo "Adding rules to allow access to USB devices..."
+
+tee /etc/udev/rules.d/00-all-usb.rules << EOF
+SUBSYSTEM=="usb", MODE="0660", GROUP="plugdev"
+EOF
+
 echo "Adding boot animation..."
 
 mkdir -p /usr/share/plymouth/themes/liveg
