@@ -13,4 +13,4 @@ xset s 0
 # This is because the FreeType library doesn't seem to link correctly when built on non-ARM64 hardware
 
 cd /system/bin
-./gshell.AppImage --appimage-extract-and-run -- --disable-gpu --real > /system/logs/gshell.log
+./gshell.AppImage --appimage-extract-and-run -- --disable-gpu --real &> /system/logs/gshell.log
