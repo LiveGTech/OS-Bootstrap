@@ -40,14 +40,14 @@ while true; do
             /system/scripts/update-reboot.sh
         fi
 
-        pushd /system/bin
+        pushd /system/bin > /dev/null
             if [ -f gshell-update.AppImage ]; then
                 # gShell files are moved this way to prevent a bad state in case of unscheduled system shutdown
                 mv gshell.AppImage gshell-old.AppImage
                 mv gshell-update.AppImage gshell.AppImage
                 rm -f gshell-old.AppImage
             fi
-        popd
+        popd > /dev/null
 
         rm -f /system/gshell-staging-ready
         rm -rf /system/storage/update
