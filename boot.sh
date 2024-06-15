@@ -136,6 +136,7 @@ sudo sed -i -e "s/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/g" build/$PLATFOR
 if [ $PLATFORM = "x86_64" ]; then
     sudo tee -a build/$PLATFORM/rootfs/etc/systemd/logind.conf << EOF
 HandlePowerKey=ignore
+HandleLidSwitch=ignore
 EOF
 fi
 
