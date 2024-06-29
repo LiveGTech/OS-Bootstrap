@@ -16,6 +16,10 @@ if xset q &> /dev/null; then
     exit
 fi
 
+if [ "$(tty)" != "/dev/tty1" ]; then
+    exit
+fi
+
 # Start X11 as root with no root window to fix misconfiguration issues with Nvidia drivers
 sudo startx : > /dev/null 2>&1
 
