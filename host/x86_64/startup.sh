@@ -53,5 +53,5 @@ while true; do
     # Remove rollback flag file
     rm -f /system/gshell-staging-rollback
 
-    startx /system/scripts/xload.sh > /dev/null 2>&1
+    startx /system/scripts/xload.sh -- -nocursor > /dev/null 2>&1
 done
