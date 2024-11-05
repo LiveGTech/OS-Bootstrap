@@ -13,11 +13,11 @@ mkdir -p cache/$PLATFORM
 
 case $PLATFORM in
     x86_64)
-        wget -nc https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.4.0-amd64-netinst.iso -O cache/$PLATFORM/base.iso
+        wget -nc https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.7.0-amd64-netinst.iso -O cache/$PLATFORM/base.iso
         ;;
 
     rpi)
-        wget -nc https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2023-10-10/2023-10-10-raspios-bookworm-armhf-lite.img.xz -O cache/$PLATFORM/baseinstall.img.xz
+        wget -nc https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2024-10-28/2024-10-22-raspios-bookworm-armhf-lite.img.xz -O cache/$PLATFORM/baseinstall.img.xz
 
         if ! [ -e cache/$PLATFORM/baseinstall.img ]; then
             xz -d -k cache/$PLATFORM/baseinstall.img.xz
@@ -26,7 +26,7 @@ case $PLATFORM in
         ;;
 
     arm64)
-        wget -nc https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-12.4.0-arm64-netinst.iso -O cache/$PLATFORM/base.iso
+        wget -nc https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-12.7.0-arm64-netinst.iso -O cache/$PLATFORM/base.iso
         ;;
 
     pinephone)

@@ -13,7 +13,7 @@
 function monitorexec {
     echo "Sending key: $1"
     # echo $1 | socat - TCP:127.0.0.1:8001 STDIO
-    echo $1 | nc 127.0.0.1 8001
+    echo $1 | nc 127.0.0.1 8001 -w 0
 }
 
 function typein {

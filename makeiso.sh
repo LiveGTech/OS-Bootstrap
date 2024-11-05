@@ -23,7 +23,10 @@ sudo cp host/$PLATFORM/initoverlay.sh build/$PLATFORM/rootfs/sbin/initoverlay
 sudo grub-mkrescue -o build/$PLATFORM/system.iso build/$PLATFORM/rootfs --directory=build/$PLATFORM/rootfs/$GRUB_LOCATION -- \
     -volid LiveG-OS-IM \
     -chmod a+rwx,g-w,o-w,ug+s,+t,g-s,-t /usr/bin/sudo -- \
-    -chmod a+rwx /usr/sbin/initoverlay --
+    -chmod a+rwx /usr/sbin/initoverlay -- \
+    -as mkisofs \
+    -isohybrid-mbr build/$PLATFORM/rootfs/usr/lib/ISOLINUX/isohdpfx.bin -b build/$PLATFORM/rootfs/usr/lib/ISOLINUX/isolinux.bin \
+    -c isolinux/boot.cat -boot-load-size 4 -boot-info-table
 
 ./unmount.sh
 
