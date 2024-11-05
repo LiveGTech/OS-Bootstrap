@@ -20,12 +20,13 @@ sudo cp host/$PLATFORM/isogrub.cfg build/$PLATFORM/rootfs/boot/grub/grub.cfg
 sudo cp host/$PLATFORM/isofstab build/$PLATFORM/rootfs/etc/fstab
 sudo cp host/$PLATFORM/initoverlay.sh build/$PLATFORM/rootfs/sbin/initoverlay
 
-sudo grub-mkrescue -o build/$PLATFORM/system.iso build/$PLATFORM/rootfs --directory=build/$PLATFORM/rootfs/$GRUB_LOCATION -- \
+sudo grub-mkrescue -o build/$PLATFORM/system.iso build/$PLATFORM/rootfs \
+    --modules="part_msdos part_gpt fat iso9660 biosdisk search search_label search_fs_uuid configfile normal multiboot" \
+    --directory=build/$PLATFORM/rootfs/$GRUB_LOCATION \
+    -- \
     -volid LiveG-OS-IM \
     -chmod a+rwx,g-w,o-w,ug+s,+t,g-s,-t /usr/bin/sudo -- \
-    -chmod a+rwx /usr/sbin/initoverlay -- \
-    -as mkisofs \
-    -isohybrid-mbr build/$PLATFORM/rootfs/usr/lib/ISOLINUX/isohdpfx.bin -b /usr/lib/ISOLINUX/isolinux.bin -no-emul-boot
+    -chmod a+rwx /usr/sbin/initoverlay --
 
 ./unmount.sh
 
@@ -41,3 +42,4 @@ bash -c "$QEMU_COMMAND \
     -hdb cache/$PLATFORM/test.img \
     -boot order=d \
     $QEMU_ARGS"
+    # -bios /usr/share/qemu/OVMF.fd \
