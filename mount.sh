@@ -12,7 +12,7 @@
 case $PLATFORM in
     x86_64)
         mkdir -p build/$PLATFORM/rootfs
-        sudo mount -o loop,offset=1048576 build/$PLATFORM/system.img build/$PLATFORM/rootfs
+        sudo mount -o loop,offset=511705088 build/$PLATFORM/system.img build/$PLATFORM/rootfs
         ;;
 
     rpi|pinephone)

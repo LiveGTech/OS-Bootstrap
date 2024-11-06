@@ -137,7 +137,7 @@ EOF
     dpkg -r --force-depends chromium # We only want the dependencies of Chromium
 
     if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ]; then
-        DEBIAN_FRONTEND=noninteractive apt install -y dosfstools isolinux nvidia-driver firmware-misc-nonfree
+        DEBIAN_FRONTEND=noninteractive apt install -y dosfstools nvidia-driver firmware-misc-nonfree
     fi
 
     if [ $PLATFORM = "x86_64" ]; then

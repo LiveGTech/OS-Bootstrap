@@ -8,8 +8,8 @@
 # Licensed by the LiveG Open-Source Licence, which can be found at LICENCE.md.
 
 export PLATFORM="x86_64"
-export GSHELL_VERSION="0.2.3"
-export GSHELL_VERNUM=1
+export GSHELL_VERSION="0.3.0"
+export GSHELL_VERNUM=6
 export GSHELL_PROVIDED_DIST=""
 export QEMU_ARGS=""
 export EMULATING=true
@@ -23,7 +23,7 @@ fi
 case $PLATFORM in
     x86_64)
         export ARCH="x86_64"
-        export GRUB_LOCATION="usr/lib/grub/x86_64-efi"
+        export GRUB_LOCATION="usr/lib/grub/i386-pc"
 
         export QEMU_ARGS="\
             -enable-kvm \
