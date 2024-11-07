@@ -101,6 +101,9 @@ if [ $PLATFORM = "pinephone" ]; then
 
     sudo mkdir -p build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants
     sudo ln -s /lib/systemd/system/getty@.service build/$PLATFORM/rootfs/etc/systemd/system/getty.target.wants/getty@tty1.service
+
+    sudo rm build/$PLATFORM/rootfs/usr/lib/systemd/system/default.target
+    sudo ln -s multi-user.target build/$PLATFORM/rootfs/usr/lib/systemd/system/default.target
 fi
 
 sudo cp firstboot.sh build/$PLATFORM/rootfs/root/firstboot.sh

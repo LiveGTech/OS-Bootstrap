@@ -9,6 +9,10 @@
 
 PLATFORM=%PLATFORM
 
+if [ $PLATFORM = "pinephone" ]; then
+    plymouth --quit
+fi
+
 clear
 
 echo " _     _            ____    ___  ____  "
@@ -72,7 +76,7 @@ if [ $PLATFORM = "pinephone" ]; then
 
     echo "Setting system clock..."
 
-    hwclock --hctosys
+    date -s "$(wget -qSO- --max-redirect=0 liveg.tech 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
 fi
 
 echo "Editing hosts file..."
