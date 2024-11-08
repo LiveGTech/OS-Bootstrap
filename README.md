@@ -41,7 +41,7 @@ Many parts of the bootstrapping process are cached in the `cache/` folder, and s
 
 To check whether KVM is enabled, install the `cpu-checker` package, then run the `kvm-ok` command.
 
-> **Note:** If you are using WSL 2 on Windows to perform bootstrapping, then you will need to use WSL 2 version 5.4 or higher. Enable Windows Hypervisor, then add `nestedVirtualization=true` under `[wsl2]` in the WSL 2 config file.
+> **Note:** If you are using WSL 2 on Windows to perform bootstrapping, then you will need to use WSL 2 version 5.4 or higher. Enable Windows Hypervisor, then add `nestedVirtualization=true` under `[wsl2]` in the WSL 2 config file. We do not, however, actively provide support for WSL 2 users and recommend that users perform bootstrapping on LiveG OS or Debian.
 
 ## Bootstrapping
 Before bootstrapping, ensure that a the copy of the gShell AppImage file you wish to include exists under `cache/gshell.AppImage`.
@@ -107,3 +107,55 @@ Here is the process that the bootstrapper follows to create a system image, wher
 * `./unmount.sh` to unmount root filesystem and save changes to mounted disk image
 * `cp build/system.img cache/system.img && ./makeiso.sh` to make an ISO image after manually modifying `build/$PLATFORM/system.img`
 * `./reapplyfirstboot.sh` to test the first-boot script after making changes to `firstboot.sh`
+
+## Guidance on using `--no-emulation`
+For platforms that are not easily emulatable (such as `pinephone` and `rpi`), it may become necessary to use real hardware to perform tasks that require the system to be booted. This can be done by using the `--no-emulation` flag and following the prompts for when an image must be flashed onto a storage drive and booted using real hardware.
+
+After this is complete, the storage drive must be imaged. This can be done by using:
+
+```bash
+sudo dd if=/dev/sdc of=system-built.img bs=4M
+```
+
+This will image the whole storage drive, so it is important to use a storage drive that is not too large. You can limit the amount of data read by using `count=`.
+
+> **Warning:** Do not boot the device after the firstboot script has completed and prior to imaging as this will mean that the filesystem will be expanded during LiveG OS Stage 2.
+
+After the storage drive has been imaged, it is then necessary to truncate the image to the correct length, discarding any data that may remain outside the partitions. This can be done by first running `fdisk -l system-built.img` to see the size we need to truncate the image to. Here is an example output of `fdisk`:
+
+```
+Disk system-built.img: 14.84 GiB, 15931539456 bytes, 31116288 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x1ba6e7d5
+
+Device            Boot  Start      End  Sectors  Size Id Type
+system-built.img1        8192   516095   507904  248M 83 Linux
+system-built.img2      516096 12582911 12066816  5.8G 83 Linux
+```
+
+The two key parts here are the sector size (`512`) and the last sector of the last partition (`12582911`).
+
+We then run the `truncate` command in the following format:
+
+```bash
+sudo truncate --size=$[($LAST_PARTITION_END+1)*$SECTOR_SIZE] system-built.img
+```
+
+In this example, we therefore run:
+
+```bash
+sudo truncate --size=$[(12582911+1)*512] system-built.img
+```
+
+You may want to verify that the truncation hasn't affected the partitions by running `fdisk` again.
+
+Finally, we can compress the image file to `.img.gz` by running:
+
+```bash
+gzip -c system-built.img > system-built.img.gz
+```
+
+Compression is beneficial due to the large number of contiguous blocks of zeros that occur in the raw `.img` file. We prefer this approach to sparse image conversion as it is more familiar to users (who are more likely to have knowledge on how to decompress a file using Gzip) and less confusing (as sparse images often use the `.img` file extension but will be invalid as a bootable format). Note that compression can take a while to complete.
