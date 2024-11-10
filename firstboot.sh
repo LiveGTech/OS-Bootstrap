@@ -89,6 +89,8 @@ if [ $PLATFORM = "rpi" ]; then
     usermod --login system pi
     groupmod -n system pi
 
+    nmtui # Not needed if connected via Ethernet
+
     echo "Syncing system clock..."
 
     timedatectl set-ntp true
@@ -149,12 +151,14 @@ EOF
     fi
 
     if [ $PLATFORM = "rpi" ]; then
-        DEBIAN_FRONTEND=noninteractive apt install -y gldriver-test raspberrypi-kernel
+        DEBIAN_FRONTEND=noninteractive apt install -y gldriver-test raspberrypi-kernel=1:1.20230405-1
     fi
 
     if [ $PLATFORM = "pinephone" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
     fi
+
+    DEBIAN_FRONTEND=noninteractive apt --fix-broken install -y
 else
     echo "Skipped installation of dependencies"
 fi
