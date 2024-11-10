@@ -139,8 +139,10 @@ EOF
     fi
 
     apt update
-    DEBIAN_FRONTEND=noninteractive apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" xorg libxkbcommon0 wget chromium fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11 fonts-urw-base35 pipewire-audio speech-dispatcher espeak
-    dpkg -r --force-depends chromium # We only want the dependencies of Chromium
+    DEBIAN_FRONTEND=noninteractive apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" xorg libxkbcommon0 wget fuse libfuse2 fdisk rsync pv efibootmgr network-manager fonts-noto zlib1g-dev plymouth plymouth-x11 fonts-urw-base35 pipewire-audio speech-dispatcher espeak
+    DEBIAN_FRONTEND=noninteractive apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --no-install-recommends chromium
+
+    apt --fix-broken install -y
 
     if [ $PLATFORM = "x86_64" ] || [ $PLATFORM = "arm64" ]; then
         DEBIAN_FRONTEND=noninteractive apt install -y dosfstools nvidia-driver firmware-misc-nonfree
@@ -158,7 +160,9 @@ EOF
         DEBIAN_FRONTEND=noninteractive apt install -y dhcpcd5 liveg-pinephone-support
     fi
 
-    DEBIAN_FRONTEND=noninteractive apt --fix-broken install -y
+    apt --fix-broken install -y
+
+    dpkg -r --force-depends chromium || true # We only want the dependencies of Chromium
 else
     echo "Skipped installation of dependencies"
 fi
